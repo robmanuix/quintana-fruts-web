@@ -1,0 +1,49 @@
+---
+import "../styles/global.css";
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const {
+	title,
+	description = "Exportadora de frutas exóticas premium de Ecuador. Cultivo responsable, trazabilidad total y calidad que cruza fronteras.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+
+		<script>
+			// Replaces CSS `scroll-behavior: smooth` (removed globally — it corrupts GSAP
+			// ScrollTrigger's internal state, see global.css). Only fires on an actual
+			// click, never during page load, so it can't race ScrollTrigger's own refresh.
+			document.addEventListener("click", (event) => {
+				const link = (event.target as HTMLElement)?.closest<HTMLAnchorElement>('a[href*="#"]');
+				if (!link) return;
+
+				const url = new URL(link.href, window.location.href);
+				if (url.pathname !== window.location.pathname || !url.hash) return;
+
+				const target = document.querySelector(url.hash);
+				if (!target) return;
+
+				event.preventDefault();
+				target.scrollIntoView({ behavior: "smooth", block: "start" });
+				history.pushState(null, "", url.hash);
+			});
+		</script>
+	</body>
+</html>
+

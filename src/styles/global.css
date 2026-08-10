@@ -1,0 +1,77 @@
+@import "@fontsource/ibarra-real-nova/400.css";
+@import "@fontsource/ibarra-real-nova/700.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/urbanist/500.css";
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* NOT scroll-behavior: smooth — GSAP ScrollTrigger measures scroll position
+   synchronously during refresh(), and CSS smooth-scroll delays the real
+   scroll position behind that read, corrupting its internal trigger state
+   (crashes with "Cannot read properties of undefined (reading 'end')" when
+   the page loads already scrolled down). Anchor links get JS-driven smooth
+   scroll instead — see Layout.astro. */
+html {
+	scroll-behavior: auto;
+}
+
+body {
+	margin: 0;
+	font-family: var(--font-body);
+	color: var(--color-black);
+	background: #fff;
+}
+
+img {
+	max-width: 100%;
+	display: block;
+}
+
+.container {
+	max-width: var(--container-max);
+	margin-inline: auto;
+	padding-inline: var(--container-padding);
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 20px;
+	padding: 12px 32px;
+	border-radius: var(--radius-pill);
+	font-family: var(--font-body);
+	font-weight: 600;
+	font-size: 16px;
+	letter-spacing: 3.2px;
+	text-transform: uppercase;
+	text-decoration: none;
+	white-space: nowrap;
+	border: none;
+	cursor: pointer;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+	transform: translateY(-2px);
+}
+
+.btn--primary {
+	background: var(--color-cream);
+	color: var(--color-purple);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}

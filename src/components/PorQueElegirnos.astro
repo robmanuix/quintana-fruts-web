@@ -1,0 +1,714 @@
+---
+import { Image } from "astro:assets";
+import img1 from "../assets/images/elegirnos-1.png";
+import img2 from "../assets/images/elegirnos-2.png";
+import img3 from "../assets/images/elegirnos-3.png";
+import img4 from "../assets/images/elegirnos-4.png";
+import img5 from "../assets/images/elegirnos-5.png";
+import img6 from "../assets/images/elegirnos-6.png";
+import dividerLeafPurple from "../assets/icons/divider-leaf-purple.svg";
+import leafSmall from "../assets/icons/leaf-small.svg";
+import iconMapLocation from "../assets/icons/icon-map-location.svg";
+import iconWorldNature from "../assets/icons/icon-world-nature.svg";
+import iconBote from "../assets/icons/icon-bote.svg";
+import iconCertificate from "../assets/icons/icon-certificate.svg";
+import iconPersons from "../assets/icons/icon-persons.svg";
+import iconCalendar from "../assets/icons/icon-calendar.svg";
+
+const cards = [
+	{
+		number: "01",
+		image: img1,
+		alt: "Viñedos de Quintana Früts en Ecuador",
+		icon: iconMapLocation,
+		title: "Origen directo desde Ecuador",
+		description: "Trabajamos directamente con productores locales para garantizar frescura, trazabilidad y mejores relaciones.",
+	},
+	{
+		number: "02",
+		image: img2,
+		alt: "Cultivo responsable y sostenible",
+		icon: iconWorldNature,
+		title: "Frutas exóticas premium",
+		description: "Seleccionamos solo frutas exóticas premium, cultivadas bajo los más altos estándares de calidad.",
+	},
+	{
+		number: "03",
+		image: img3,
+		alt: "De Ecuador para el mundo: exportación aérea y marítima",
+		icon: iconBote,
+		title: "Logística de exportación confiable",
+		description: "Logística internacional confiable para entregas puntuales, con seguimiento en cada etapa del proceso.",
+	},
+	{
+		number: "04",
+		image: img4,
+		alt: "Calidad certificada",
+		icon: iconCertificate,
+		title: "Estándares de calidad internacional",
+		description: "Cumplimos con certificaciones internacionales que aseguran inocuidad, calidad y responsabilidad.",
+	},
+	{
+		number: "05",
+		image: img5,
+		alt: "Relaciones de confianza con productores",
+		icon: iconPersons,
+		title: "Relaciones comerciales duraderas",
+		description: "Construimos relaciones sólidas basadas en confianza, comunicación y crecimiento mutuo.",
+	},
+	{
+		number: "06",
+		image: img6,
+		alt: "Disponibilidad y logística todo el año",
+		icon: iconCalendar,
+		title: "Disponibilidad todo el año",
+		description: "Disponibilidad constante durante todo el año para abastecer tu mercado sin interrupciones.",
+	},
+];
+---
+
+<section class="elegirnos" id="por-que-elegirnos">
+	<div class="elegirnos__inner">
+		<div class="elegirnos__intro">
+			<h2 class="elegirnos__heading">
+				Lo que nos hace tu <span class="elegirnos__heading-accent">mejor aliado.</span>
+			</h2>
+			<img src={dividerLeafPurple.src} alt="" class="elegirnos__divider" width="457" height="38" />
+			<p class="elegirnos__body">
+				Trabajamos junto a productores locales de confianza para ofrecer frutas exóticas con los más altos
+				estándares de calidad, seguridad alimentaria y responsabilidad social.
+			</p>
+		</div>
+
+		<div class="elegirnos__cards">
+			{cards.map((card) => (
+				<div class="elegirnos__card" data-card={card.number}>
+					<div class="elegirnos__card-image-wrap">
+						<Image src={card.image} alt={card.alt} class="elegirnos__card-image" widths={[300, 500, 700]} sizes="(max-width: 900px) 45vw, 320px" />
+					</div>
+					<div class="elegirnos__card-overlay" aria-hidden="true"></div>
+					<div class="elegirnos__card-open-mask" aria-hidden="true"></div>
+
+					<span class="elegirnos__card-badge-rest" aria-hidden="true">{card.number.replace(/^0/, "")}</span>
+					<img src={card.icon.src} alt="" class="elegirnos__card-icon-rest" aria-hidden="true" />
+
+					<div class="elegirnos__card-content">
+						<img src={card.icon.src} alt="" class="elegirnos__card-icon-open" />
+						<h3 class="elegirnos__card-title">{card.title}</h3>
+						<span class="elegirnos__card-line" aria-hidden="true"></span>
+						<p class="elegirnos__card-desc">{card.description}</p>
+					</div>
+				</div>
+			))}
+		</div>
+
+		<div class="elegirnos__dots" role="tablist" aria-label="Seleccionar tarjeta">
+			{
+				cards.map((card, i) => (
+					<button
+						type="button"
+						class="elegirnos__dot"
+						data-index={i}
+						aria-label={`Ver ${card.title}`}
+						aria-current={i === 0 ? "true" : "false"}
+					/>
+				))
+			}
+		</div>
+
+		<div class="elegirnos__caption">
+			<img src={leafSmall.src} alt="" class="elegirnos__caption-icon" width="33" height="38" />
+			<p class="elegirnos__caption-text">De Ecuador para el mundo, con cálidad que se siente y confianza que perdura.</p>
+		</div>
+	</div>
+</section>
+
+<style>
+	.elegirnos {
+		position: relative;
+		background: var(--color-purple);
+		padding-block: 96px;
+		overflow: hidden;
+	}
+
+	.elegirnos__inner {
+		max-width: 1272px;
+		margin-inline: auto;
+		padding-inline: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.elegirnos__intro {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		max-width: 800px;
+		text-align: center;
+	}
+
+	.elegirnos__heading {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(32px, 3.6vw, 54px);
+		line-height: 1.2;
+		color: var(--color-cream);
+	}
+
+	.elegirnos__heading-accent {
+		color: var(--color-orange);
+	}
+
+	.elegirnos__divider {
+		width: min(457px, 80%);
+		height: auto;
+	}
+
+	.elegirnos__body {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 32px;
+		color: var(--color-cream);
+	}
+
+	.elegirnos__cards {
+		display: flex;
+		gap: 8px;
+		width: 100%;
+		margin-top: 56px;
+		overflow: hidden;
+	}
+
+	.elegirnos__card {
+		position: relative;
+		flex-grow: 1;
+		flex-shrink: 1;
+		flex-basis: 0;
+		min-width: 0;
+		height: 480px;
+		border-radius: 12px;
+		overflow: hidden;
+		cursor: pointer;
+		transition: flex-grow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.elegirnos__card-image-wrap {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		transition: height 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	.elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* open state: the photo is capped to a fixed band up top instead of covering the full card */
+	.elegirnos__card.is-open .elegirnos__card-image-wrap {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: auto;
+		width: 100%;
+		height: 300px;
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.elegirnos__card[data-card="01"].is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		object-position: 0 25%;
+	}
+
+	.elegirnos__card[data-card="02"].is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		object-position: 0 80%;
+	}
+
+	.elegirnos__card[data-card="03"].is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		object-position: 0 70%;
+	}
+
+	.elegirnos__card[data-card="04"].is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		object-position: 0 55%;
+	}
+
+	.elegirnos__card[data-card="06"].is-open .elegirnos__card-image-wrap :global(img.elegirnos__card-image) {
+		object-position: 0 60%;
+	}
+
+	/* rest state: faithful to the original design — flat dark scrim for icon/number contrast */
+	.elegirnos__card-overlay {
+		position: absolute;
+		inset: 0;
+		background: #191917ab;
+		pointer-events: none;
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-overlay {
+		background: #1919174f;
+	}
+
+	/* open state only: photo stays visible up top, bottom half turns solid (same tone as the
+	   Hero's shadow overlay) fading up into the photo, so the centered copy sits on solid ground */
+	.elegirnos__card-open-mask {
+		position: absolute;
+		inset: 0;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.45s ease;
+		background: linear-gradient(
+			180deg,
+			rgba(39, 43, 44, 0) 0%,
+			rgba(39, 43, 44, 0) 34%,
+			var(--color-hero-overlay) 62%,
+			var(--color-hero-overlay) 100%
+		);
+	}
+
+	.elegirnos__card-badge-rest {
+		position: absolute;
+		right: -15px;
+		bottom: -25px;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: 150px;
+		line-height: 1;
+		color: var(--color-orange);
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+
+	.elegirnos__card-icon-rest {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: auto;
+		height: auto;
+		max-width: 55px;
+		max-height: 55px;
+		object-fit: contain;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+
+	.elegirnos__card-content {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 10px;
+		padding: 32px 20px;
+		pointer-events: none;
+	}
+
+	.elegirnos__card-icon-open,
+	.elegirnos__card-title,
+	.elegirnos__card-line,
+	.elegirnos__card-desc {
+		opacity: 0;
+		transform: translateY(10px);
+		transition: opacity 0.35s ease, transform 0.35s ease;
+	}
+
+	.elegirnos__card-icon-open {
+		width: 40px;
+		height: 40px;
+		object-fit: contain;
+		transition-delay: 0.06s;
+	}
+
+	.elegirnos__card-title {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: 36px;
+		line-height: 1.25;
+		color: var(--color-cream);
+		transition-delay: 0.14s;
+	}
+
+	.elegirnos__card-line {
+		width: 40px;
+		height: 3px;
+		background: var(--color-orange);
+		border-radius: 2px;
+		transform: scaleX(0) translateY(10px);
+		transform-origin: center;
+		transition: opacity 0.3s ease 0.22s, transform 0.3s ease 0.22s;
+	}
+
+	.elegirnos__card-desc {
+		margin: 0;
+		max-width: 400px;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 22px;
+		color: var(--color-cream);
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		transition-delay: 0.3s;
+	}
+
+	/* open: hovered card widens, reveals centered copy in sequence, masks the photo's top half */
+	.elegirnos__card.is-open {
+		flex-grow: 3.4;
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-badge-rest,
+	.elegirnos__card.is-open .elegirnos__card-icon-rest {
+		opacity: 0;
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-open-mask {
+		opacity: 1;
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-icon-open,
+	.elegirnos__card.is-open .elegirnos__card-title,
+	.elegirnos__card.is-open .elegirnos__card-desc {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.elegirnos__card.is-open .elegirnos__card-line {
+		opacity: 1;
+		transform: scaleX(1) translateY(0);
+	}
+
+	/* collapsed: a sibling card is open, so this one narrows and hides everything, including the number */
+	.elegirnos__card.is-collapsed {
+		flex-grow: 0.55;
+	}
+
+	.elegirnos__card.is-collapsed .elegirnos__card-badge-rest,
+	.elegirnos__card.is-collapsed .elegirnos__card-icon-rest {
+		opacity: 0;
+	}
+
+	.elegirnos__dots {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		margin-top: 24px;
+	}
+
+	.elegirnos__dot {
+		width: 8px;
+		height: 8px;
+		padding: 0;
+		border: none;
+		border-radius: 999px;
+		background: rgba(243, 232, 209, 0.35);
+		cursor: pointer;
+		transition: width 0.3s ease, background-color 0.3s ease;
+	}
+
+	.elegirnos__dot:focus-visible {
+		outline: 2px solid var(--color-orange);
+		outline-offset: 3px;
+	}
+
+	.elegirnos__dot.is-active {
+		width: 24px;
+		background: var(--color-orange);
+	}
+
+	.elegirnos__caption {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin-top: 48px;
+		text-align: center;
+	}
+
+	.elegirnos__caption-icon {
+		flex-shrink: 0;
+	}
+
+	.elegirnos__caption-text {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 600;
+		font-style: italic;
+		font-size: 18px;
+		line-height: 32px;
+		color: var(--color-cream);
+	}
+
+	/* below 1024px there's no hover, so the accordion interaction is dropped
+	   and every card just shows its full content all the time */
+	/* below 1024px there's no hover, so every card just shows its full content, centered, all the time */
+	@media (max-width: 1024px) {
+		.elegirnos__cards {
+			flex-wrap: wrap;
+		}
+
+		.elegirnos__card {
+			flex: 1 1 calc(33.33% - 8px);
+			height: 360px;
+			cursor: default;
+		}
+
+		.elegirnos__card-badge-rest,
+		.elegirnos__card-icon-rest {
+			opacity: 0;
+		}
+
+		.elegirnos__card-open-mask {
+			opacity: 1;
+		}
+
+		.elegirnos__card-icon-open,
+		.elegirnos__card-title,
+		.elegirnos__card-line,
+		.elegirnos__card-desc {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.elegirnos {
+			padding-block: 64px;
+		}
+
+		.elegirnos__heading {
+			font-size: 32px;
+		}
+
+		.elegirnos__cards {
+			flex-wrap: nowrap;
+			gap: 12px;
+			margin-top: 40px;
+			overflow-x: auto;
+			scroll-snap-type: x mandatory;
+			scroll-behavior: smooth;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: none;
+		}
+
+		.elegirnos__cards::-webkit-scrollbar {
+			display: none;
+		}
+
+		.elegirnos__card {
+			flex: 0 0 100%;
+			width: 100%;
+			height: 460px;
+			scroll-snap-align: center;
+			scroll-snap-stop: always;
+		}
+
+		.elegirnos__card-overlay {
+			background: #191917bf;
+		}
+
+		.elegirnos__card-open-mask {
+			display: none;
+		}
+
+		.elegirnos__card-content {
+			padding: 20px;
+			gap: 8px;
+		}
+
+		.elegirnos__card-title {
+			font-size: 28px;
+			white-space: normal;
+		}
+
+		.elegirnos__card-desc {
+			font-size: 18px;
+			line-height: 24px;
+			-webkit-line-clamp: 4;
+		}
+
+		.elegirnos__dots {
+			display: flex;
+		}
+
+		.elegirnos__caption {
+			flex-direction: column;
+			gap: 8px;
+		}
+	}
+</style>
+
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	function initIntroReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const intro = document.querySelector<HTMLElement>(".elegirnos__intro");
+		if (!intro) return;
+
+		const heading = intro.querySelector<HTMLElement>(".elegirnos__heading");
+		const divider = intro.querySelector<HTMLElement>(".elegirnos__divider");
+		const body = intro.querySelector<HTMLElement>(".elegirnos__body");
+
+		gsap.set([heading, divider, body].filter(Boolean), { opacity: 0, y: 24 });
+
+		// toggleActions, not once:true — once:true auto-kills the ScrollTrigger the
+		// instant it fires, and when a page loads already scrolled past several such
+		// triggers at once, the resulting cascade of simultaneous kills can crash GSAP's
+		// internal refresh (it mutates the trigger list mid-iteration). toggleActions
+		// plays forward once without ever removing the trigger.
+		const tl = gsap.timeline({
+			scrollTrigger: { trigger: intro, start: "top 75%", toggleActions: "play none none none" },
+			defaults: { ease: "power3.out" },
+		});
+
+		if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.6 }, 0);
+		if (divider) tl.to(divider, { opacity: 1, y: 0, duration: 0.5 }, 0.15);
+		if (body) tl.to(body, { opacity: 1, y: 0, duration: 0.6 }, 0.25);
+	}
+
+	function initCardsStaircase() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const wrap = document.querySelector<HTMLElement>(".elegirnos__cards");
+		if (!wrap) return;
+
+		const cards = wrap.querySelectorAll<HTMLElement>(".elegirnos__card");
+		if (!cards.length) return;
+
+		gsap.set(cards, { yPercent: 100, opacity: 0 });
+
+		const tl = gsap.timeline({
+			scrollTrigger: { trigger: wrap, start: "top 85%", toggleActions: "play none none none" },
+			defaults: { ease: "power3.out" },
+		});
+
+		cards.forEach((card, i) => {
+			tl.to(card, { yPercent: 0, opacity: 1, duration: 0.55 }, i * 0.12);
+		});
+	}
+
+	function initCaptionReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const caption = document.querySelector<HTMLElement>(".elegirnos__caption");
+		if (!caption) return;
+
+		const icon = caption.querySelector<HTMLElement>(".elegirnos__caption-icon");
+		const text = caption.querySelector<HTMLElement>(".elegirnos__caption-text");
+
+		gsap.set([icon, text].filter(Boolean), { opacity: 0, y: 16 });
+
+		const tl = gsap.timeline({
+			scrollTrigger: { trigger: caption, start: "top 90%", toggleActions: "play none none none" },
+			defaults: { ease: "power3.out" },
+		});
+
+		if (icon) tl.to(icon, { opacity: 1, y: 0, duration: 0.4 }, 0);
+		if (text) tl.to(text, { opacity: 1, y: 0, duration: 0.5 }, 0.1);
+	}
+
+	function initAccordionHover() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+		if (!window.matchMedia("(min-width: 1025px)").matches) return;
+
+		const wrap = document.querySelector<HTMLElement>(".elegirnos__cards");
+		if (!wrap) return;
+
+		const cards = [...wrap.querySelectorAll<HTMLElement>(".elegirnos__card")];
+		if (!cards.length) return;
+
+		// CSS transitions (not GSAP timelines) drive this: hover fires rapidly as the
+		// mouse crosses cards, and CSS interrupts/reverses from its current computed
+		// value cleanly, where competing GSAP timelines could get interrupted mid-tween
+		// and leave a card stuck half-open.
+		cards.forEach((card) => {
+			card.addEventListener("mouseenter", () => {
+				cards.forEach((c) => {
+					c.classList.toggle("is-open", c === card);
+					c.classList.toggle("is-collapsed", c !== card);
+				});
+			});
+		});
+
+		wrap.addEventListener("mouseleave", () => {
+			cards.forEach((c) => c.classList.remove("is-open", "is-collapsed"));
+		});
+	}
+
+	function initCardsCarousel() {
+		const wrap = document.querySelector<HTMLElement>(".elegirnos__cards");
+		const dotsWrap = document.querySelector<HTMLElement>(".elegirnos__dots");
+		if (!wrap || !dotsWrap) return;
+
+		const cards = [...wrap.querySelectorAll<HTMLElement>(".elegirnos__card")];
+		const dots = [...dotsWrap.querySelectorAll<HTMLElement>(".elegirnos__dot")];
+		if (!cards.length || !dots.length) return;
+
+		const mobile = window.matchMedia("(max-width: 640px)");
+
+		function setActive(index: number) {
+			dots.forEach((dot, i) => {
+				dot.classList.toggle("is-active", i === index);
+				dot.setAttribute("aria-current", i === index ? "true" : "false");
+			});
+		}
+
+		let ticking = false;
+		wrap.addEventListener(
+			"scroll",
+			() => {
+				if (!mobile.matches || ticking) return;
+				ticking = true;
+				requestAnimationFrame(() => {
+					const index = Math.round(wrap.scrollLeft / wrap.clientWidth);
+					setActive(Math.max(0, Math.min(index, cards.length - 1)));
+					ticking = false;
+				});
+			},
+			{ passive: true },
+		);
+
+		dots.forEach((dot, i) => {
+			dot.addEventListener("click", () => {
+				const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+				wrap.scrollTo({ left: i * wrap.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
+			});
+		});
+
+		setActive(0);
+	}
+
+	function initElegirnosAnimations() {
+		initIntroReveal();
+		initCardsStaircase();
+		initCaptionReveal();
+		initAccordionHover();
+		initCardsCarousel();
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initElegirnosAnimations);
+	} else {
+		initElegirnosAnimations();
+	}
+</script>

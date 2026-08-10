@@ -1,0 +1,27 @@
+/* Design tokens extraídos de Figma (Sitio web Quintana Früts) */
+:root {
+	/* Colores de marca */
+	--color-cream: #f3e8d1;
+	--color-cream-soft: #fbeedb;
+	--color-orange: #f08120;
+	--color-green: #819227;
+	--color-purple: #4a2565;
+	--color-black: #191917;
+	--color-hero-overlay: #272b2c;
+
+	/* Tipografía */
+	--font-heading: "Ibarra Real Nova", serif;
+	--font-body: "Poppins", sans-serif;
+	--font-nav: "Urbanist", sans-serif;
+
+	/* Espaciados base (grid de 1512px de referencia en Figma) */
+	--container-max: 1512px;
+	--container-padding: 65px;
+	--radius-pill: 999px;
+}
+
+@media (max-width: 768px) {
+	:root {
+		--container-padding: 24px;
+	}
+}
