@@ -98,6 +98,11 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 		align-items: center;
 		gap: 24px;
 		padding: 24px var(--container-padding);
+		transition: padding-block 0.35s ease;
+	}
+
+	.site-header.is-scrolled .site-header__inner {
+		padding-block: 12px;
 	}
 
 	.site-header__logo {
@@ -108,6 +113,11 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 		display: block;
 		height: 70px;
 		width: auto;
+		transition: height 0.35s ease;
+	}
+
+	.site-header.is-scrolled .site-header__logo img {
+		height: 48px;
 	}
 
 	.site-header__actions {
