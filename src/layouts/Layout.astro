@@ -1,5 +1,7 @@
 ---
+import { getImage } from "astro:assets";
 import "../styles/global.css";
+import ogSource from "../assets/images/nosotros-orchard.png";
 
 interface Props {
 	title: string;
@@ -10,6 +12,25 @@ const {
 	title,
 	description = "Exportadora de frutas exóticas premium de Ecuador. Cultivo responsable, trazabilidad total y calidad que cruza fronteras.",
 } = Astro.props;
+
+const ogImage = await getImage({ src: ogSource, width: 1200, height: 630 });
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const ogImageUrl = new URL(ogImage.src, Astro.site);
+
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "Organization",
+	name: "Quintana Früts",
+	url: Astro.site?.toString(),
+	logo: new URL("/favicon.png", Astro.site).toString(),
+	description: "Exportadora de frutas exóticas premium de Ecuador.",
+	email: "sales@quintanafruts.com",
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: "Guayaquil",
+		addressCountry: "EC",
+	},
+};
 ---
 
 <!doctype html>
@@ -20,7 +41,23 @@ const {
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
 		<title>{title}</title>
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Quintana Früts" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={ogImageUrl} />
+		<meta property="og:locale" content="es_EC" />
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageUrl} />
+
+		<script type="application/ld+json" set:html={JSON.stringify(structuredData)} is:inline />
 	</head>
 	<body>
 		<slot />
@@ -46,4 +83,3 @@ const {
 		</script>
 	</body>
 </html>
-

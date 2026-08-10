@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://quintanafruts.com/sitemap-index.xml

@@ -6,6 +6,18 @@ export const prerender = false;
 const REQUIRED_FIELDS = ["nombre", "apellidos", "email", "asunto", "comentario"] as const;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const RATE_LIMIT_MAX = 5;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const requestLog = new Map<string, number[]>();
+
+function isRateLimited(ip: string) {
+	const now = Date.now();
+	const timestamps = (requestLog.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+	timestamps.push(now);
+	requestLog.set(ip, timestamps);
+	return timestamps.length > RATE_LIMIT_MAX;
+}
+
 function escapeHtml(value: string) {
 	return value
 		.replace(/&/g, "&amp;")
@@ -49,7 +61,16 @@ function buildEmailHtml(fields: Record<string, string>) {
 	</div>`;
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, clientAddress }) => {
+	// behind Coolify's Traefik + Cloudflare, the raw socket address is the proxy's,
+	// not the visitor's — the real IP is the first hop in X-Forwarded-For.
+	const forwardedFor = request.headers.get("x-forwarded-for");
+	const ip = forwardedFor?.split(",")[0]?.trim() || clientAddress;
+
+	if (isRateLimited(ip)) {
+		return new Response(JSON.stringify({ error: "Demasiadas solicitudes. Intenta de nuevo más tarde." }), { status: 429 });
+	}
+
 	let data: Record<string, unknown>;
 	try {
 		data = await request.json();
