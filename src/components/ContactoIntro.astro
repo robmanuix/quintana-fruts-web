@@ -27,6 +27,8 @@ const contactReasons = ["Cotización de productos", "Alianza comercial y distrib
 				<h2 class="contacto-intro__card-heading">Para más información, completa el formulario</h2>
 
 				<form class="contacto-form" id="contacto-form">
+					<input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
 					<div class="contacto-form__field">
 						<label for="empresa" class="visually-hidden">Empresa</label>
 						<input type="text" id="empresa" name="empresa" class="contacto-form__input" placeholder="Empresa" />
@@ -395,12 +397,29 @@ const contactReasons = ["Cotización de productos", "Alianza comercial y distrib
 		form.addEventListener("input", updateSubmitState);
 		form.addEventListener("change", updateSubmitState);
 
-		form.addEventListener("submit", (event) => {
+		form.addEventListener("submit", async (event) => {
 			event.preventDefault();
 			submitBtn.disabled = true;
-			status.textContent = "¡Gracias! Recibimos tu mensaje y te contactaremos pronto.";
-			form.reset();
-			updateSubmitState();
+			status.textContent = "Enviando...";
+
+			const payload = Object.fromEntries(new FormData(form).entries());
+
+			try {
+				const response = await fetch("/api/contact", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(payload),
+				});
+
+				if (!response.ok) throw new Error("request-failed");
+
+				status.textContent = "¡Gracias! Recibimos tu mensaje y te contactaremos pronto.";
+				form.reset();
+			} catch {
+				status.textContent = "No pudimos enviar tu mensaje. Intenta de nuevo o escríbenos directo a info@quintanafruts.com.";
+			} finally {
+				updateSubmitState();
+			}
 		});
 	}
 
