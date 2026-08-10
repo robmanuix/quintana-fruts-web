@@ -391,6 +391,14 @@ const contactReasons = ["Cotización de productos", "Información general"];
 			submitBtn.disabled = !form.checkValidity();
 		};
 
+		const asuntoParam = new URLSearchParams(window.location.search).get("asunto");
+		if (asuntoParam) {
+			const select = form.querySelector<HTMLSelectElement>("#asunto");
+			if (select && [...select.options].some((option) => option.value === asuntoParam)) {
+				select.value = asuntoParam;
+			}
+		}
+
 		updateSubmitState();
 		form.addEventListener("input", updateSubmitState);
 		form.addEventListener("change", updateSubmitState);

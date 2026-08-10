@@ -159,7 +159,10 @@ const trustStats = [
 									Ficha técnica
 									<img src={iconCtaDocument.src} alt="" width="16" height="20" />
 								</a>
-								<a href="#" class="productos__cta productos__cta--outline">
+								<a
+									href={`/contacto?asunto=${encodeURIComponent("Cotización de productos")}`}
+									class="productos__cta productos__cta--outline"
+								>
 									Solicitar cotización
 									<img src={product.arrow.src} alt="" width="17.5" height="15" class="productos__cta-arrow" />
 								</a>

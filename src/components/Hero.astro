@@ -30,7 +30,7 @@ import ArrowIcon from "../assets/icons/arrow.svg";
 			Frutas exóticas premium<br class="hero__subtitle-break" /> de Ecuador.
 		</p>
 		<img src={DividerLeaf.src} alt="" class="hero__divider" width="457" height="38" />
-		<a href="/contacto" class="btn btn--primary" data-animate="hero-cta">
+		<a href={`/contacto?asunto=${encodeURIComponent("Información general")}`} class="btn btn--primary" data-animate="hero-cta">
 			Solicitar información
 			<img src={ArrowIcon.src} alt="" width="18" height="15" class="hero__cta-arrow" />
 		</a>
