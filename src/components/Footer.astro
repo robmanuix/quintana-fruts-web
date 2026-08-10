@@ -4,15 +4,17 @@ import logoQuintanaFruts from "../assets/icons/logo-quintana-fruits.svg";
 import iconInstagram from "../assets/icons/icon-social-instagram.svg";
 import iconLinkedin from "../assets/icons/icon-social-linkedin.svg";
 import iconEmail from "../assets/icons/icon-social-email.svg";
+import iconWhatsapp from "../assets/icons/icon-social-whatsapp.svg";
+
+const whatsappMessage = "Hello Quintana Früts.\nI would like more information about your products.";
+const whatsappHref = `https://wa.me/593939664770?text=${encodeURIComponent(whatsappMessage)}`;
 
 const socialLinks = [
 	{ href: "#", label: "Instagram", icon: iconInstagram },
 	{ href: "#", label: "LinkedIn", icon: iconLinkedin },
 	{ href: "mailto:info@quintanafruts.com", label: "Correo", icon: iconEmail },
+	{ href: whatsappHref, label: "WhatsApp", icon: iconWhatsapp, target: "_blank" },
 ];
-
-const whatsappMessage = "Hello Quintana Früts.\nI would like more information about your products.";
-const whatsappHref = `https://wa.me/593939664770?text=${encodeURIComponent(whatsappMessage)}`;
 ---
 
 <footer class="footer" id="contacto">
@@ -31,7 +33,13 @@ const whatsappHref = `https://wa.me/593939664770?text=${encodeURIComponent(whats
 					<div class="footer__social-icons">
 						{
 							socialLinks.map((social) => (
-								<a href={social.href} class="footer__social-icon" aria-label={social.label}>
+								<a
+									href={social.href}
+									class="footer__social-icon"
+									aria-label={social.label}
+									target={social.target}
+									rel={social.target ? "noopener noreferrer" : undefined}
+								>
 									<img src={social.icon.src} alt="" width="35" height="35" />
 								</a>
 							))
