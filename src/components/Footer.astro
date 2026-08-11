@@ -5,15 +5,19 @@ import iconInstagram from "../assets/icons/icon-social-instagram.svg";
 import iconLinkedin from "../assets/icons/icon-social-linkedin.svg";
 import iconEmail from "../assets/icons/icon-social-email.svg";
 import iconWhatsapp from "../assets/icons/icon-social-whatsapp.svg";
+import { translations, getLocale } from "../i18n/translations";
+
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].footer;
 
 const whatsappMessage = "Hello Quintana Früts.\nI would like more information about your products.";
 const whatsappHref = `https://wa.me/593939664770?text=${encodeURIComponent(whatsappMessage)}`;
 
 const socialLinks = [
-	{ href: "#", label: "Instagram", icon: iconInstagram },
-	{ href: "#", label: "LinkedIn", icon: iconLinkedin },
-	{ href: "mailto:sales@quintanafruts.com", label: "Correo", icon: iconEmail },
-	{ href: whatsappHref, label: "WhatsApp", icon: iconWhatsapp, target: "_blank" },
+	{ href: "#", label: t.socialLabels.instagram, icon: iconInstagram },
+	{ href: "#", label: t.socialLabels.linkedin, icon: iconLinkedin },
+	{ href: "mailto:sales@quintanafruts.com", label: t.socialLabels.email, icon: iconEmail },
+	{ href: whatsappHref, label: t.socialLabels.whatsapp, icon: iconWhatsapp, target: "_blank" },
 ];
 ---
 
@@ -25,11 +29,10 @@ const socialLinks = [
 			<div class="footer__brand">
 				<img src={logoQuintanaFruts.src} alt="Quintana Früts" class="footer__logo" width="151" height="66" />
 				<p class="footer__desc">
-					Exportadora de frutas exóticas de Ecuador. Seleccionamos fruta premium y trabajamos directamente con
-					productores de confianza.
+					{t.desc}
 				</p>
 				<div class="footer__social">
-					<span class="footer__social-label">Síguenos en:</span>
+					<span class="footer__social-label">{t.followUs}</span>
 					<div class="footer__social-icons">
 						{
 							socialLinks.map((social) => (
@@ -49,8 +52,8 @@ const socialLinks = [
 			</div>
 
 			<div class="footer__contact">
-				<p class="footer__contact-heading">Contacto</p>
-				<p class="footer__contact-line">Guayaquil, Ecuador</p>
+				<p class="footer__contact-heading">{t.contactHeading}</p>
+				<p class="footer__contact-line">{t.location}</p>
 				<a href="mailto:sales@quintanafruts.com" class="footer__contact-line footer__contact-link">sales@quintanafruts.com</a>
 				<a href="https://www.quintanafruts.com" class="footer__contact-line footer__contact-link">www.quintanafruts.com</a>
 			</div>

@@ -5,6 +5,12 @@ import heroFruit2 from "../assets/images/hero-fruit-2.png";
 import heroFruit3 from "../assets/images/hero-fruit-3.png";
 import DividerLeaf from "../assets/icons/divider-leaf.svg";
 import ArrowIcon from "../assets/icons/arrow.svg";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { translations, getLocale } from "../i18n/translations";
+
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].hero;
+const ctaHref = `${getRelativeLocaleUrl(locale, "/contacto")}?asunto=${encodeURIComponent(t.ctaAsunto)}`;
 ---
 
 <section class="hero" id="inicio">
@@ -23,15 +29,15 @@ import ArrowIcon from "../assets/icons/arrow.svg";
 
 	<div class="hero__content">
 		<h1 class="hero__title" data-animate="hero-title">
-			Donde la calidad<br />
-			comienza <span class="hero__title-accent">desde el origen</span>
+			{t.titleLine1}<br />
+			{t.titleLine2Prefix}<span class="hero__title-accent">{t.titleAccent}</span>
 		</h1>
 		<p class="hero__subtitle" data-animate="hero-subtitle">
-			Frutas exóticas premium<br class="hero__subtitle-break" /> de Ecuador.
+			{t.subtitleLine1}<br class="hero__subtitle-break" /> {t.subtitleLine2}
 		</p>
 		<img src={DividerLeaf.src} alt="" class="hero__divider" width="457" height="38" />
-		<a href={`/contacto?asunto=${encodeURIComponent("Información general")}`} class="btn btn--primary" data-animate="hero-cta">
-			Solicitar información
+		<a href={ctaHref} class="btn btn--primary" data-animate="hero-cta">
+			{t.cta}
 			<img src={ArrowIcon.src} alt="" width="18" height="15" class="hero__cta-arrow" />
 		</a>
 	</div>

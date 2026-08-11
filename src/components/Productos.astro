@@ -42,76 +42,66 @@ import iconTrace from "../assets/icons/icon-productos-trace.svg";
 import iconLogistics from "../assets/icons/icon-productos-logistics.svg";
 import iconPartnership from "../assets/icons/icon-productos-partnership.svg";
 import iconCalendar from "../assets/icons/icon-productos-calendar.svg";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { translations, getLocale } from "../i18n/translations";
 
-const products = [
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].productos;
+const ctaHref = `${getRelativeLocaleUrl(locale, "/contacto")}?asunto=${encodeURIComponent(t.ctaAsunto)}`;
+
+const productMeta = [
 	{
 		accent: "purple",
-		name: "Gulupa",
 		scientific: "Passiflora edulis",
-		description:
-			"Fruta de corteza púrpura y pulpa aromática con un balance agridulce perfecto. Fuente natural de antioxidantes y vitamina C que contribuye al bienestar diario.",
 		photos: { main: p1Main, top: p1Top, bottom: p1Bottom },
 		bloom: p1Bloom,
 		bloomStyle: "corner",
 		arrow: iconArrowPurple,
-		stats: [
-			{ icon: iconOrigenPurple, label: "Origen", value: "Ecuador" },
-			{ icon: iconSaborPurple, label: "Sabor", value: "Agridulce" },
-			{ icon: iconTemporadaPurple, label: "Temporada", value: "Todo el año" },
-			{ icon: iconTransportePurple, label: "Transporte", value: "Aéreo" },
-		],
+		statIcons: { origen: iconOrigenPurple, sabor: iconSaborPurple, temporada: iconTemporadaPurple, transporte: iconTransportePurple },
 	},
 	{
 		accent: "orange",
-		name: "Granadilla",
 		scientific: "Passiflora ligularis",
-		description:
-			"Fruto de cáscara dorada con pulpa transparente y sumamente dulce. Destaca por su alto contenido de fibra y agua, siendo excelente para la digestión y el cuidado estomacal.",
 		photos: { main: p2Main, top: p2Top, bottom: p2Bottom },
 		bloom: p2Bloom,
 		bloomStyle: "corner",
 		arrow: iconArrowOrange,
-		stats: [
-			{ icon: iconOrigenOrange, label: "Origen", value: "Ecuador" },
-			{ icon: iconSaborOrange, label: "Sabor", value: "Dulce" },
-			{ icon: iconTemporadaOrange, label: "Temporada", value: "Todo el año" },
-			{ icon: iconTransporteOrange, label: "Transporte", value: "Aéreo" },
-		],
+		statIcons: { origen: iconOrigenOrange, sabor: iconSaborOrange, temporada: iconTemporadaOrange, transporte: iconTransporteOrange },
 	},
 	{
 		accent: "green",
-		name: "Naranjilla",
 		scientific: "Solanum quitoense",
-		description:
-			"Fruto tropical de corteza naranja y pulpa densa, con un excelente aporte de vitamina A y C. Ideal para fortalecer el sistema inmune.",
 		photos: { main: p3Main, top: p3Top, bottom: p3Bottom },
 		bloom: p3Bloom,
 		bloomStyle: "corner",
 		arrow: iconArrowGreen,
-		stats: [
-			{ icon: iconOrigenGreen, label: "Origen", value: "Ecuador" },
-			{ icon: iconSaborGreen, label: "Sabor", value: "Ácido - Dulce" },
-			{ icon: iconTemporadaGreen, label: "Temporada", value: "Todo el año" },
-			{ icon: iconTransporteGreen, label: "Transporte", value: "Aéreo" },
-		],
+		statIcons: { origen: iconOrigenGreen, sabor: iconSaborGreen, temporada: iconTemporadaGreen, transporte: iconTransporteGreen },
 	},
 ];
 
-const trustStats = [
-	{ icon: iconQuality, title: ["Calidad", "excepcional"], desc: ["Seleccionamos frutas exóticas con los más", "altos estándares"] },
-	{ icon: iconTrace, title: ["Trazabilidad", "completa"], desc: ["Controlamos cada etapa para garantizar", "transparencia y origen confiable."] },
-	{ icon: iconLogistics, title: ["Logística", "confiable"], desc: ["Coordinamos envíos internacionales", "seguros y eficientes."] },
-	{ icon: iconPartnership, title: ["Relaciones", "duraderas"], desc: ["Construimos alianzas basadas en", "confianza y compromiso."] },
-	{ icon: iconCalendar, title: ["Disponibilidad", "todo el año"], desc: ["Suministro constante para acompañar", "tu demanda."] },
-];
+const statKeys = ["origen", "sabor", "temporada", "transporte"] as const;
+
+const products = t.products.map((product, i) => ({
+	...productMeta[i],
+	name: product.name,
+	description: product.description,
+	stats: statKeys.map((key) => ({
+		icon: productMeta[i].statIcons[key],
+		label: t.statLabels[key],
+		value: product.statValues[key],
+	})),
+}));
+
+const trustIcons = [iconQuality, iconTrace, iconLogistics, iconPartnership, iconCalendar];
+const trustStats = t.trustStats.map((stat, i) => ({ icon: trustIcons[i], title: stat.title, desc: stat.desc }));
 ---
 
 <section class="productos" id="productos">
 	<div class="productos__inner">
 		<div class="productos__intro">
-			<h2 class="productos__heading">Frutas de Ecuador seleccionadas para el mundo.</h2>
+			<h2 class="productos__heading">{t.heading}</h2>
 			<img src={dividerLeafPurple.src} alt="" class="productos__divider" width="457" height="38" />
-			<p class="productos__subheading">Cálidad superior, trazabilidad y relaciones que perduran.</p>
+			<p class="productos__subheading">{t.subheading}</p>
 		</div>
 
 		<div class="productos__list">
@@ -124,14 +114,14 @@ const trustStats = [
 
 						<div class="productos__card-photos">
 							<div class="productos__photo productos__photo--main">
-								<Image src={product.photos.main} alt={`${product.name} en su cultivo`} widths={[300, 500, 790]} sizes="(max-width: 1024px) 55vw, 395px" />
+								<Image src={product.photos.main} alt={t.photoAltMain(product.name)} widths={[300, 500, 790]} sizes="(max-width: 1024px) 55vw, 395px" />
 							</div>
 							<div class="productos__photo-stack">
 								<div class="productos__photo productos__photo--top">
-									<Image src={product.photos.top} alt={`${product.name} cortada`} widths={[200, 384]} sizes="192px" />
+									<Image src={product.photos.top} alt={t.photoAltTop(product.name)} widths={[200, 384]} sizes="192px" />
 								</div>
 								<div class="productos__photo productos__photo--bottom">
-									<Image src={product.photos.bottom} alt={`Planta de ${product.name}`} widths={[200, 384]} sizes="192px" />
+									<Image src={product.photos.bottom} alt={t.photoAltBottom(product.name)} widths={[200, 384]} sizes="192px" />
 								</div>
 							</div>
 						</div>
@@ -156,14 +146,11 @@ const trustStats = [
 							</div>
 							<div class="productos__card-cta">
 								<a href="#" class="productos__cta productos__cta--solid">
-									Ficha técnica
+									{t.ctaFicha}
 									<img src={iconCtaDocument.src} alt="" width="16" height="20" />
 								</a>
-								<a
-									href={`/contacto?asunto=${encodeURIComponent("Cotización de productos")}`}
-									class="productos__cta productos__cta--outline"
-								>
-									Solicitar cotización
+								<a href={ctaHref} class="productos__cta productos__cta--outline">
+									{t.ctaCotizar}
 									<img src={product.arrow.src} alt="" width="17.5" height="15" class="productos__cta-arrow" />
 								</a>
 							</div>

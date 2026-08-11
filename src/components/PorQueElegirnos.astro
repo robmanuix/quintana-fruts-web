@@ -14,69 +14,32 @@ import iconBote from "../assets/icons/icon-bote.svg";
 import iconCertificate from "../assets/icons/icon-certificate.svg";
 import iconPersons from "../assets/icons/icon-persons.svg";
 import iconCalendar from "../assets/icons/icon-calendar.svg";
+import { translations, getLocale } from "../i18n/translations";
 
-const cards = [
-	{
-		number: "01",
-		image: img1,
-		alt: "Viñedos de Quintana Früts en Ecuador",
-		icon: iconMapLocation,
-		title: "Origen directo desde Ecuador",
-		description: "Eliminamos intermediarios conectando tu negocio directamente con el origen.",
-	},
-	{
-		number: "02",
-		image: img2,
-		alt: "Cultivo responsable y sostenible",
-		icon: iconWorldNature,
-		title: "Frutas exóticas premium",
-		description: "Iniciamos nuestra oferta global con una selección estratégica de alta gama.",
-	},
-	{
-		number: "03",
-		image: img3,
-		alt: "De Ecuador para el mundo: exportación aérea y marítima",
-		icon: iconBote,
-		title: "Logística de exportación confiable",
-		description: "Diseñamos soluciones logísticas a la medida de los mercados más exigentes.",
-	},
-	{
-		number: "04",
-		image: img4,
-		alt: "Calidad certificada",
-		icon: iconCertificate,
-		title: "Estándares de calidad internacional",
-		description: "Garantizamos la máxima integridad del producto mediante procesos alineados con los mercados más exigentes.",
-	},
-	{
-		number: "05",
-		image: img5,
-		alt: "Relaciones de confianza con productores",
-		icon: iconPersons,
-		title: "Relaciones comerciales duraderas",
-		description: "Alineamos nuestros objetivos con los suyos para convertirnos en una extensión de su propia cadena de valor.",
-	},
-	{
-		number: "06",
-		image: img6,
-		alt: "Disponibilidad y logística todo el año",
-		icon: iconCalendar,
-		title: "Disponibilidad todo el año",
-		description: "Aprovechamos la ubicación ecuatorial privilegiada y los microclimas de Ecuador para romper la estacionalidad de las frutas exóticas.",
-	},
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].porQueElegirnos;
+
+const cardMeta = [
+	{ number: "01", image: img1, alt: "Viñedos de Quintana Früts en Ecuador", icon: iconMapLocation },
+	{ number: "02", image: img2, alt: "Cultivo responsable y sostenible", icon: iconWorldNature },
+	{ number: "03", image: img3, alt: "De Ecuador para el mundo: exportación aérea y marítima", icon: iconBote },
+	{ number: "04", image: img4, alt: "Calidad certificada", icon: iconCertificate },
+	{ number: "05", image: img5, alt: "Relaciones de confianza con productores", icon: iconPersons },
+	{ number: "06", image: img6, alt: "Disponibilidad y logística todo el año", icon: iconCalendar },
 ];
+
+const cards = t.cards.map((card, i) => ({ ...cardMeta[i], ...card }));
 ---
 
 <section class="elegirnos" id="por-que-elegirnos">
 	<div class="elegirnos__inner">
 		<div class="elegirnos__intro">
 			<h2 class="elegirnos__heading">
-				Lo que nos hace tu <span class="elegirnos__heading-accent">mejor aliado.</span>
+				{t.headingPrefix}<span class="elegirnos__heading-accent">{t.headingAccent}</span>
 			</h2>
 			<img src={dividerLeafPurple.src} alt="" class="elegirnos__divider" width="457" height="38" />
 			<p class="elegirnos__body">
-				Trabajamos junto a productores locales de confianza para ofrecer frutas exóticas con los más altos
-				estándares de calidad, seguridad alimentaria y responsabilidad social.
+				{t.body}
 			</p>
 		</div>
 
@@ -102,14 +65,14 @@ const cards = [
 			))}
 		</div>
 
-		<div class="elegirnos__dots" role="tablist" aria-label="Seleccionar tarjeta">
+		<div class="elegirnos__dots" role="tablist" aria-label={t.dotsAriaLabel}>
 			{
 				cards.map((card, i) => (
 					<button
 						type="button"
 						class="elegirnos__dot"
 						data-index={i}
-						aria-label={`Ver ${card.title}`}
+						aria-label={`${t.dotAriaLabel} ${card.title}`}
 						aria-current={i === 0 ? "true" : "false"}
 					/>
 				))
@@ -118,7 +81,7 @@ const cards = [
 
 		<div class="elegirnos__caption">
 			<img src={leafSmall.src} alt="" class="elegirnos__caption-icon" width="33" height="38" />
-			<p class="elegirnos__caption-text">De Ecuador para el mundo, con calidad que se siente y confianza que perdura.</p>
+			<p class="elegirnos__caption-text">{t.captionText}</p>
 		</div>
 	</div>
 </section>

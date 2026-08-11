@@ -10,12 +10,13 @@ import IconMagnifier from "../assets/icons/icon-magnifier.svg";
 import IconGlobeOutline from "../assets/icons/icon-globe-outline.svg";
 import dividerVertical from "../assets/icons/divider-vertical.svg";
 import dividerWave from "../assets/icons/divider-horizontal-wave.svg";
+import { translations, getLocale } from "../i18n/translations";
 
-const features = [
-	{ icon: IconLeaf.src, label: ["Cultivo", "Resposable"] },
-	{ icon: IconMagnifier.src, label: ["Trazabilidad", "Total"] },
-	{ icon: IconGlobeOutline.src, label: ["Calidad que cruza fronteras"] },
-];
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].nosotros;
+
+const featureIcons = [IconLeaf.src, IconMagnifier.src, IconGlobeOutline.src];
+const features = t.features.map((feature, i) => ({ icon: featureIcons[i], label: feature.label }));
 ---
 
 <section class="nosotros" id="nosotros">
@@ -30,15 +31,13 @@ const features = [
 			<div class="nosotros__intro">
 				<div class="nosotros__heading-block">
 					<h2 class="nosotros__heading">
-						De Ecuador<br />
-						para el mundo,<br />
-						<span class="nosotros__heading-accent">con transparencia.</span>
+						{t.headingLine1}<br />
+						{t.headingLine2}<br />
+						<span class="nosotros__heading-accent">{t.headingAccent}</span>
 					</h2>
 				</div>
 				<p class="nosotros__body">
-					En Quintana Früts nos especializamos en la exportación de frutas exóticas premium de Ecuador, donde
-					hacemos de la <span class="nosotros__highlight">transparencia en la cadena</span> y el{" "}
-					<span class="nosotros__highlight">cultivo limpio</span> los pilares de nuestra operación.
+					{t.body.map((part) => (part.highlight ? <span class="nosotros__highlight">{part.text}</span> : part.text))}
 				</p>
 				<div class="nosotros__features">
 					{features.map((feature, i) => (
@@ -61,21 +60,20 @@ const features = [
 			</div>
 
 			<div class="nosotros__image-main">
-				<Image src={orchard} alt="Cultivo de granadillas de Quintana Früts en Ecuador" widths={[400, 700, 1000]} sizes="(max-width: 900px) 100vw, 590px" />
+				<Image src={orchard} alt={t.mainImageAlt} widths={[400, 700, 1000]} sizes="(max-width: 900px) 100vw, 590px" />
 			</div>
 
 			<div class="nosotros__gallery">
-				<Image src={handFruit} alt="Granadilla fresca recién cortada" widths={[300, 500]} sizes="(max-width: 900px) 50vw, 304px" />
-				<Image src={vineyard} alt="Cultivos de Quintana Früts en las montañas de Ecuador" widths={[300, 500]} sizes="(max-width: 900px) 50vw, 303px" />
+				<Image src={handFruit} alt={t.galleryAlt1} widths={[300, 500]} sizes="(max-width: 900px) 50vw, 304px" />
+				<Image src={vineyard} alt={t.galleryAlt2} widths={[300, 500]} sizes="(max-width: 900px) 50vw, 303px" />
 			</div>
 
 			<div class="nosotros__compromiso">
 				<h3 class="nosotros__compromiso-heading">
-					Frutas excepcionales, relaciones <span class="nosotros__heading-accent">duraderas</span>
+					{t.compromisoPrefix}<span class="nosotros__heading-accent">{t.compromisoAccent}</span>
 				</h3>
 				<p class="nosotros__body">
-					Trabajamos junto a productores locales de confianza para ofrecer frutas exóticas con los más altos
-					estándares de calidad, seguridad alimentaria y responsabilidad social.
+					{t.compromisoBody}
 				</p>
 			</div>
 		</div>

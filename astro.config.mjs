@@ -7,5 +7,19 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
 	site: 'https://quintanafruts.com',
 	adapter: node({ mode: 'standalone' }),
-	integrations: [sitemap()],
+	i18n: {
+		defaultLocale: 'es',
+		locales: ['es', 'en'],
+		routing: {
+			prefixDefaultLocale: false,
+		},
+	},
+	integrations: [
+		sitemap({
+			i18n: {
+				defaultLocale: 'es',
+				locales: { es: 'es', en: 'en' },
+			},
+		}),
+	],
 });

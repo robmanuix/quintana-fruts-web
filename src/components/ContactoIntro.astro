@@ -2,18 +2,21 @@
 import { Image } from "astro:assets";
 import contactoFruta from "../assets/images/contacto-fruta-flotante.png";
 import iconArrowCream from "../assets/icons/icon-cta-arrow-cream.svg";
+import { translations, getLocale } from "../i18n/translations";
 
-const contactReasons = ["Cotización de productos", "Información general"];
+const locale = getLocale(Astro.currentLocale);
+const t = translations[locale].contacto;
+const contactReasons = t.form.reasons;
 ---
 
 <section class="contacto-intro">
 	<div class="contacto-intro__inner">
 		<div class="contacto-intro__header">
 			<h1 class="contacto-intro__heading" data-animate="fade-up">
-				Ponte en <span class="contacto-intro__heading-accent">contacto</span> con nosotros.
+				{t.headingPrefix}<span class="contacto-intro__heading-accent">{t.headingAccent}</span>{t.headingSuffix}
 			</h1>
 			<p class="contacto-intro__subtext" data-animate="fade-up">
-				Estamos cerca de ti, escríbenos a{" "}
+				{t.subtextPrefix}
 				<a href="mailto:sales@quintanafruts.com" class="contacto-intro__link">sales@quintanafruts.com</a>
 			</p>
 		</div>
@@ -22,55 +25,55 @@ const contactReasons = ["Cotización de productos", "Información general"];
 			<Image src={contactoFruta} alt="" class="contacto-intro__fruit" widths={[300, 500]} sizes="326px" aria-hidden="true" />
 
 			<div class="contacto-intro__card">
-				<h2 class="contacto-intro__card-heading">Para más información, completa el formulario</h2>
+				<h2 class="contacto-intro__card-heading">{t.cardHeading}</h2>
 
 				<form class="contacto-form" id="contacto-form">
 					<input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
 					<div class="contacto-form__field">
-						<label for="empresa" class="visually-hidden">Empresa</label>
-						<input type="text" id="empresa" name="empresa" class="contacto-form__input" placeholder="Empresa" />
+						<label for="empresa" class="visually-hidden">{t.form.empresaLabel}</label>
+						<input type="text" id="empresa" name="empresa" class="contacto-form__input" placeholder={t.form.empresaPlaceholder} />
 					</div>
 
 					<div class="contacto-form__row">
 						<div class="contacto-form__field">
-							<label for="nombre" class="visually-hidden">Nombre</label>
-							<input type="text" id="nombre" name="nombre" class="contacto-form__input" placeholder="Nombre*" required />
+							<label for="nombre" class="visually-hidden">{t.form.nombreLabel}</label>
+							<input type="text" id="nombre" name="nombre" class="contacto-form__input" placeholder={t.form.nombrePlaceholder} required />
 						</div>
 						<div class="contacto-form__field">
-							<label for="apellidos" class="visually-hidden">Apellidos</label>
-							<input type="text" id="apellidos" name="apellidos" class="contacto-form__input" placeholder="Apellidos*" required />
+							<label for="apellidos" class="visually-hidden">{t.form.apellidosLabel}</label>
+							<input type="text" id="apellidos" name="apellidos" class="contacto-form__input" placeholder={t.form.apellidosPlaceholder} required />
 						</div>
 					</div>
 
 					<div class="contacto-form__row">
 						<div class="contacto-form__field">
-							<label for="email" class="visually-hidden">Correo electrónico</label>
+							<label for="email" class="visually-hidden">{t.form.emailLabel}</label>
 							<input
 								type="email"
 								id="email"
 								name="email"
 								class="contacto-form__input"
-								placeholder="Correo electrónico*"
+								placeholder={t.form.emailPlaceholder}
 								required
 							/>
 						</div>
 						<div class="contacto-form__field">
-							<label for="asunto" class="visually-hidden">Asunto</label>
+							<label for="asunto" class="visually-hidden">{t.form.asuntoLabel}</label>
 							<select id="asunto" name="asunto" class="contacto-form__input contacto-form__select" required>
-								<option value="" selected disabled>Asunto*</option>
+								<option value="" selected disabled>{t.form.asuntoPlaceholder}</option>
 								{contactReasons.map((reason) => <option value={reason}>{reason}</option>)}
 							</select>
 						</div>
 					</div>
 
 					<div class="contacto-form__field">
-						<label for="comentario" class="visually-hidden">Comentario</label>
+						<label for="comentario" class="visually-hidden">{t.form.comentarioLabel}</label>
 						<textarea
 							id="comentario"
 							name="comentario"
 							class="contacto-form__input contacto-form__textarea"
-							placeholder="Comentario*"
+							placeholder={t.form.comentarioPlaceholder}
 							rows="4"
 							required
 						/>
@@ -78,15 +81,23 @@ const contactReasons = ["Cotización de productos", "Información general"];
 
 					<label class="contacto-form__checkbox">
 						<input type="checkbox" name="privacidad" required />
-						<span>He leído y acepto las condiciones de la <a href="#">Política de Privacidad</a></span>
+						<span>{t.form.privacyPrefix}<a href="#">{t.form.privacyLink}</a></span>
 					</label>
 
 					<button type="submit" class="contacto-form__submit" disabled>
-						Enviar
+						{t.form.submit}
 						<img src={iconArrowCream.src} alt="" width="17" height="15" />
 					</button>
 
-					<p class="contacto-form__status" data-form-status role="status" aria-live="polite"></p>
+					<p
+						class="contacto-form__status"
+						data-form-status
+						data-msg-sending={t.form.sending}
+						data-msg-success={t.form.success}
+						data-msg-error={t.form.error}
+						role="status"
+						aria-live="polite"
+					></p>
 				</form>
 			</div>
 		</div>
@@ -406,7 +417,7 @@ const contactReasons = ["Cotización de productos", "Información general"];
 		form.addEventListener("submit", async (event) => {
 			event.preventDefault();
 			submitBtn.disabled = true;
-			status.textContent = "Enviando...";
+			status.textContent = status.dataset.msgSending ?? "";
 
 			const payload = Object.fromEntries(new FormData(form).entries());
 
@@ -419,10 +430,10 @@ const contactReasons = ["Cotización de productos", "Información general"];
 
 				if (!response.ok) throw new Error("request-failed");
 
-				status.textContent = "¡Gracias! Recibimos tu mensaje y te contactaremos pronto.";
+				status.textContent = status.dataset.msgSuccess ?? "";
 				form.reset();
 			} catch {
-				status.textContent = "No pudimos enviar tu mensaje. Intenta de nuevo o escríbenos directo a sales@quintanafruts.com.";
+				status.textContent = status.dataset.msgError ?? "";
 			} finally {
 				updateSubmitState();
 			}

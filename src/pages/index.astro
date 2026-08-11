@@ -6,9 +6,12 @@ import Nosotros from "../components/Nosotros.astro";
 import PorQueElegirnos from "../components/PorQueElegirnos.astro";
 import Productos from "../components/Productos.astro";
 import Footer from "../components/Footer.astro";
+import { translations, getLocale } from "../i18n/translations";
+
+const t = translations[getLocale(Astro.currentLocale)];
 ---
 
-<Layout title="Quintana Früts | Frutas exóticas premium de Ecuador">
+<Layout title={t.indexPage.title}>
 	<Header />
 	<main>
 		<Hero />

@@ -1,8 +1,10 @@
 ---
+import { getRelativeLocaleUrl } from "astro:i18n";
 import LogoQuintanaFruts from "../assets/icons/logo-quintana-fruits.svg";
 import LogoQuintanaFrutsDark from "../assets/icons/logo-quintana-fruits-dark.svg";
 import GlobeIcon from "../assets/icons/globe.svg";
 import GlobeIconDark from "../assets/icons/globe-dark.svg";
+import { translations, getLocale } from "../i18n/translations";
 
 interface Props {
 	/** "on-dark": cream/white elements over a photo hero (default). "on-light": dark elements for pages with a light/cream background. */
@@ -11,12 +13,21 @@ interface Props {
 
 const { variant = "on-dark" } = Astro.props;
 
+const locale = getLocale(Astro.currentLocale);
+const otherLocale = locale === "es" ? "en" : "es";
+const t = translations[locale];
+
+const home = getRelativeLocaleUrl(locale, "/");
 const navLinks = [
-	{ href: "/#nosotros", label: "Nosotros" },
-	{ href: "/#por-que-elegirnos", label: "¿Por qué elegirnos?" },
-	{ href: "/#productos", label: "Productos" },
-	{ href: "/contacto", label: "Contacténos" },
+	{ href: `${home}#nosotros`, label: t.header.nav.nosotros },
+	{ href: `${home}#por-que-elegirnos`, label: t.header.nav.porQueElegirnos },
+	{ href: `${home}#productos`, label: t.header.nav.productos },
+	{ href: getRelativeLocaleUrl(locale, "/contacto"), label: t.header.nav.contacto },
 ];
+
+// swap to the equivalent page in the other language, preserving the current path
+const unprefixedPath = locale === "en" ? Astro.url.pathname.replace(/^\/en\/?/, "/") : Astro.url.pathname;
+const langSwitchHref = getRelativeLocaleUrl(otherLocale, unprefixedPath);
 
 const logo = variant === "on-light" ? LogoQuintanaFrutsDark : LogoQuintanaFruts;
 const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
@@ -24,12 +35,12 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 
 <header class="site-header" data-theme={variant}>
 	<div class="site-header__inner">
-		<a href="/" class="site-header__logo" aria-label="Quintana Früts - inicio">
+		<a href={home} class="site-header__logo" aria-label={t.header.logoAlt}>
 			<img src={logo.src} alt="Quintana Früts" width="200" height="88" />
 		</a>
 
 		<div class="site-header__nav-collapse" data-nav-collapse>
-			<nav class="site-header__nav" id="site-nav" aria-label="Navegación principal">
+			<nav class="site-header__nav" id="site-nav" aria-label={t.header.mainNav}>
 				{
 					navLinks.map((link) => (
 						<a href={link.href} class="site-header__nav-link">
@@ -44,9 +55,11 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 			<button
 				type="button"
 				class="site-header__menu-toggle"
-				aria-label="Abrir menú"
+				aria-label={t.header.openMenu}
 				aria-expanded="false"
 				aria-controls="site-nav"
+				data-label-open={t.header.openMenu}
+				data-label-close={t.header.closeMenu}
 			>
 				<span class="site-header__menu-icon" aria-hidden="true">
 					<span></span>
@@ -55,10 +68,10 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 				</span>
 			</button>
 
-			<div class="site-header__lang">
+			<a href={langSwitchHref} class="site-header__lang">
 				<img src={globe.src} alt="" width="20" height="20" />
-				<span>EN</span>
-			</div>
+				<span>{t.header.switchTo}</span>
+			</a>
 		</div>
 	</div>
 </header>
@@ -238,6 +251,7 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 		font-family: var(--font-body);
 		font-weight: 500;
 		font-size: 18px;
+		text-decoration: none;
 	}
 
 	/* on-light: dark elements for pages with a light/cream background (e.g. Contacto) */
@@ -319,7 +333,7 @@ const globe = variant === "on-light" ? GlobeIconDark : GlobeIcon;
 
 		const setOpen = (open: boolean) => {
 			toggle.setAttribute("aria-expanded", String(open));
-			toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+			toggle.setAttribute("aria-label", open ? toggle.dataset.labelClose ?? "" : toggle.dataset.labelOpen ?? "");
 			collapse.classList.toggle("is-open", open);
 		};
 

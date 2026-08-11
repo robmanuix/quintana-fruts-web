@@ -1,21 +1,25 @@
 ---
 import { getImage } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import "../styles/global.css";
 import ogSource from "../assets/images/nosotros-orchard.png";
+import { translations, getLocale } from "../i18n/translations";
 
 interface Props {
 	title: string;
 	description?: string;
 }
 
-const {
-	title,
-	description = "Exportadora de frutas exóticas premium de Ecuador. Cultivo responsable, trazabilidad total y calidad que cruza fronteras.",
-} = Astro.props;
+const locale = getLocale(Astro.currentLocale);
+const { title, description = translations[locale].layout.defaultDescription } = Astro.props;
 
 const ogImage = await getImage({ src: ogSource, width: 1200, height: 630 });
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const ogImageUrl = new URL(ogImage.src, Astro.site);
+
+const unprefixedPath = locale === "en" ? Astro.url.pathname.replace(/^\/en\/?/, "/") : Astro.url.pathname;
+const alternateEs = new URL(getRelativeLocaleUrl("es", unprefixedPath), Astro.site);
+const alternateEn = new URL(getRelativeLocaleUrl("en", unprefixedPath), Astro.site);
 
 const structuredData = {
 	"@context": "https://schema.org",
@@ -34,7 +38,7 @@ const structuredData = {
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={locale}>
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
@@ -42,6 +46,9 @@ const structuredData = {
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonicalUrl} />
+		<link rel="alternate" hreflang="es" href={alternateEs} />
+		<link rel="alternate" hreflang="en" href={alternateEn} />
+		<link rel="alternate" hreflang="x-default" href={alternateEs} />
 		<title>{title}</title>
 
 		<meta property="og:type" content="website" />
@@ -50,7 +57,7 @@ const structuredData = {
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:image" content={ogImageUrl} />
-		<meta property="og:locale" content="es_EC" />
+		<meta property="og:locale" content={locale === "en" ? "en_US" : "es_EC"} />
 
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={title} />
