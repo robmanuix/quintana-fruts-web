@@ -183,7 +183,7 @@ export const translations = {
 			titleLine1: "Where quality",
 			titleLine2Prefix: "begins ",
 			titleAccent: "from the source",
-			subtitleLine1: "Premium exotic fruit",
+			subtitleLine1: "Premium exotic fruits",
 			subtitleLine2: "from Ecuador.",
 			cta: "Request information",
 			ctaAsunto: "General information",
