@@ -13,6 +13,7 @@ import { Users } from "./collections/Users";
 import { ContactPage } from "./globals/ContactPage";
 import { HomePage } from "./globals/HomePage";
 import { SiteSettings } from "./globals/SiteSettings";
+import { migrations } from "./migrations";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -43,6 +44,9 @@ export default buildConfig({
 		pool: {
 			connectionString: process.env.DATABASE_URI || "",
 		},
+		// dev mode auto-syncs the schema (push); production deploys must run
+		// `payload migrate` explicitly instead — see apps/cms/Dockerfile's CMD.
+		prodMigrations: migrations,
 	}),
 	sharp,
 	plugins: hasS3Config

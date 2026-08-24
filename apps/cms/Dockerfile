@@ -30,5 +30,20 @@ WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=80
 COPY --from=build /repo/apps/cms/.next/standalone ./
 COPY --from=build /repo/apps/cms/.next/static ./apps/cms/.next/static
+
+# `payload migrate` needs the actual TS source (payload.config.ts + collections/
+# globals/migrations it imports) — Payload's CLI loads it via tsx at runtime,
+# it isn't part of the Next.js server bundle. Dev mode auto-syncs the schema
+# (push); this is the production equivalent, run once on every container start
+# so the DB schema is always current before the server starts serving traffic.
+COPY --from=build /repo/apps/cms/src ./apps/cms/src
+ENV PAYLOAD_CONFIG_PATH=/app/apps/cms/src/payload.config.ts
+
+# Next's standalone tracer only keeps files the running server actually
+# imports, which prunes payload/bin.js (the CLI, only ever invoked directly —
+# never imported) along with the rest of payload/dist/bin/*. `migrate` needs
+# the untraced package, so overlay the full install on top.
+COPY --from=build /repo/node_modules ./node_modules
+
 EXPOSE 80
-CMD ["node", "apps/cms/server.js"]
+CMD ["sh", "-c", "node node_modules/payload/bin.js migrate && node apps/cms/server.js"]
