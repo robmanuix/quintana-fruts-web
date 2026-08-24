@@ -1,0 +1,273 @@
+---
+import florGulupa from "../assets/images/footer-flor-gulupa.svg";
+import iconInstagram from "../assets/icons/icon-social-instagram.svg";
+import iconLinkedin from "../assets/icons/icon-social-linkedin.svg";
+import iconEmail from "../assets/icons/icon-social-email.svg";
+import iconWhatsapp from "../assets/icons/icon-social-whatsapp.svg";
+import { getSiteSettings, mediaUrl } from "../lib/payload";
+
+const locale = Astro.currentLocale === "en" ? "en" : "es";
+const settings = await getSiteSettings(locale);
+const footer = settings.footer ?? {};
+const contact = settings.contact ?? {};
+
+const PLATFORM_ICON: Record<string, ImageMetadata> = {
+	instagram: iconInstagram,
+	linkedin: iconLinkedin,
+	email: iconEmail,
+	facebook: iconInstagram,
+	other: iconInstagram,
+};
+
+const whatsappHref = contact.whatsappNumber
+	? `https://wa.me/${contact.whatsappNumber.replace(/[^\d]/g, "")}?text=${encodeURIComponent(contact.whatsappMessageTemplate ?? "")}`
+	: undefined;
+
+const socialLinks = [
+	...(footer.socialLinks ?? []).map((social) => ({
+		href: social.url,
+		label: social.label ?? social.platform,
+		icon: mediaUrl(social.icon) ?? PLATFORM_ICON[social.platform]?.src,
+	})),
+	...(whatsappHref ? [{ href: whatsappHref, label: "WhatsApp", icon: iconWhatsapp.src, target: "_blank" }] : []),
+];
+
+const logo = mediaUrl(settings.brand?.logoOnDark);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="contacto">
+	<img src={florGulupa.src} alt="" class="footer__flower" aria-hidden="true" />
+
+	<div class="footer__inner">
+		<div class="footer__columns">
+			<div class="footer__brand">
+				{logo && <img src={logo} alt="Quintana Früts" class="footer__logo" width="151" height="66" />}
+				<p class="footer__desc">
+					{footer.description}
+				</p>
+				<div class="footer__social">
+					<span class="footer__social-label">{footer.followUsLabel}</span>
+					<div class="footer__social-icons">
+						{
+							socialLinks.map((social) => (
+								<a
+									href={social.href}
+									class="footer__social-icon"
+									aria-label={social.label}
+									target={social.target}
+									rel={social.target ? "noopener noreferrer" : undefined}
+								>
+									<img src={social.icon} alt="" width="35" height="35" />
+								</a>
+							))
+						}
+					</div>
+				</div>
+			</div>
+
+			<div class="footer__contact">
+				<p class="footer__contact-heading">{contact.contactHeading}</p>
+				<p class="footer__contact-line">{contact.locationLine}</p>
+				{contact.email && (
+					<a href={`mailto:${contact.email}`} class="footer__contact-line footer__contact-link">
+						{contact.email}
+					</a>
+				)}
+				{contact.website && (
+					<a href={contact.website} class="footer__contact-line footer__contact-link">
+						{contact.website.replace(/^https?:\/\//, "")}
+					</a>
+				)}
+			</div>
+		</div>
+
+		<p class="footer__copyright">
+			{year} © <span class="footer__copyright-accent">Quintana Früts</span> by{" "}
+			<span class="footer__copyright-accent">{footer.copyrightLegalName}</span>
+			<br />
+			Developed by <span class="footer__copyright-accent">{footer.devCredit}</span>
+		</p>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		position: relative;
+		background: var(--color-black);
+		overflow: hidden;
+		padding-block: 64px;
+	}
+
+	.footer__flower {
+		position: absolute;
+		top: 18px;
+		right: -39px;
+		width: min(439px, 32vw);
+		height: auto;
+		pointer-events: none;
+	}
+
+	.footer__inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1272px;
+		margin-inline: auto;
+		padding-inline: 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 40px;
+	}
+
+	.footer__columns {
+		display: flex;
+		align-items: flex-start;
+		gap: 64px;
+	}
+
+	.footer__brand {
+		flex: 0 0 auto;
+		width: 386px;
+		max-width: 100%;
+		padding-right: 64px;
+		border-right: 1px solid rgba(243, 232, 209, 0.24);
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+	}
+
+	.footer__logo {
+		display: block;
+		width: 151px;
+		height: auto;
+	}
+
+	.footer__desc {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 24px;
+		color: var(--color-cream);
+	}
+
+	.footer__social {
+		display: flex;
+		align-items: center;
+		gap: 24px;
+	}
+
+	.footer__social-label {
+		font-family: var(--font-nav);
+		font-weight: 700;
+		font-size: 16px;
+		color: var(--color-cream);
+		white-space: nowrap;
+	}
+
+	.footer__social-icons {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.footer__social-icon {
+		display: inline-flex;
+		transition: opacity 0.2s ease;
+	}
+
+	.footer__social-icon:hover {
+		opacity: 0.7;
+	}
+
+	.footer__contact {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		padding-top: 4px;
+	}
+
+	.footer__contact-heading {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 700;
+		font-size: 24px;
+		color: var(--color-cream);
+	}
+
+	.footer__contact-line {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 18px;
+		color: var(--color-cream);
+		text-decoration: none;
+	}
+
+	.footer__contact-link:hover {
+		text-decoration: underline;
+	}
+
+	.footer__copyright {
+		margin: 0;
+		font-family: var(--font-body);
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 24px;
+		color: var(--color-cream);
+		text-align: right;
+	}
+
+	.footer__copyright-accent {
+		font-weight: 700;
+		color: var(--color-orange);
+	}
+
+	@media (max-width: 900px) {
+		.footer__columns {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 40px;
+		}
+
+		.footer__brand {
+			width: 100%;
+			padding-right: 0;
+			padding-bottom: 32px;
+			border-right: none;
+			border-bottom: 1px solid rgba(243, 232, 209, 0.24);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.footer {
+			padding-block: 48px;
+		}
+
+		.footer__flower {
+			top: -20px;
+			right: -20px;
+			width: 260px;
+			opacity: 0.6;
+		}
+
+		.footer__desc {
+			text-align: center;
+		}
+
+		.footer__social {
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 12px;
+		}
+
+		.footer__contact {
+			align-items: center;
+			text-align: center;
+		}
+
+		.footer__copyright {
+			text-align: center;
+		}
+	}
+</style>

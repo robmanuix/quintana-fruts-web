@@ -1,0 +1,498 @@
+---
+import { Image } from "astro:assets";
+import dividerVertical from "../assets/icons/divider-vertical.svg";
+import dividerWave from "../assets/icons/divider-horizontal-wave.svg";
+import { getHomePage, mediaUrl } from "../lib/payload";
+
+const locale = Astro.currentLocale === "en" ? "en" : "es";
+const homePage = await getHomePage(locale);
+const nosotros = homePage.nosotros ?? {};
+const bloque1 = nosotros.bloque1 ?? {};
+const bloque2 = nosotros.bloque2 ?? {};
+const floatingImages = nosotros.floatingImages ?? [];
+const features = bloque1.features ?? [];
+const galleryImages = bloque2.featuredImages ?? [];
+---
+
+<section class="nosotros" id="nosotros">
+	<div class="nosotros__deco" aria-hidden="true">
+		{
+			floatingImages.map((deco, i) => (
+				<Image
+					src={mediaUrl(deco.image)!}
+					alt=""
+					class={`nosotros__deco-img nosotros__deco-img--${i + 1}`}
+					data-side={i === 1 ? "left" : "right"}
+					width={562}
+					height={562}
+					loading="lazy"
+				/>
+			))
+		}
+	</div>
+
+	<div class="nosotros__inner">
+		<div class="nosotros__grid">
+			<div class="nosotros__intro">
+				<div class="nosotros__heading-block">
+					<h2 class="nosotros__heading">
+						{bloque1.headingLine1}<br />
+						{bloque1.headingLine2}<br />
+						<span class="nosotros__heading-accent">{bloque1.headingAccent}</span>
+					</h2>
+				</div>
+				<p class="nosotros__body">
+					{(bloque1.bodyFragments ?? []).map((part) => (part.highlight ? <span class="nosotros__highlight">{part.text}</span> : part.text))}
+				</p>
+				<div class="nosotros__features">
+					{features.map((feature, i) => (
+						<>
+							{i > 0 && <img src={dividerVertical.src} alt="" class="nosotros__divider" />}
+							<div class="nosotros__feature">
+								<img src={mediaUrl(feature.icon)} alt="" class="nosotros__feature-icon" width="52" height="52" />
+								<p class="nosotros__feature-label">
+									{feature.label.split("\n").map((line) => (
+										<>
+											{line}
+											<br />
+										</>
+									))}
+								</p>
+							</div>
+						</>
+					))}
+				</div>
+			</div>
+
+			<div class="nosotros__image-main">
+				<Image
+					src={mediaUrl(bloque1.featuredImage)!}
+					alt={bloque1.featuredImageAlt ?? ""}
+					width={1000}
+					height={1000}
+					widths={[400, 700, 1000]}
+					sizes="(max-width: 900px) 100vw, 590px"
+				/>
+			</div>
+
+			<div class="nosotros__gallery">
+				{
+					galleryImages.map((img) => (
+						<Image src={mediaUrl(img.image)!} alt={img.alt ?? ""} width={800} height={1000} widths={[300, 500]} sizes="(max-width: 900px) 50vw, 304px" />
+					))
+				}
+			</div>
+
+			<div class="nosotros__compromiso">
+				<h3 class="nosotros__compromiso-heading">
+					{bloque2.compromisoPrefix}<span class="nosotros__heading-accent">{bloque2.compromisoAccent}</span>
+				</h3>
+				<p class="nosotros__body">
+					{bloque2.compromisoBody}
+				</p>
+			</div>
+		</div>
+	</div>
+
+	<img src={dividerWave.src} alt="" class="nosotros__wave" aria-hidden="true" />
+</section>
+
+<style>
+	.nosotros {
+		position: relative;
+		background: var(--color-cream);
+		overflow: hidden;
+		padding-block: 96px;
+	}
+
+	.nosotros__deco {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.nosotros__deco-img {
+		position: absolute;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.nosotros__deco-img--1 {
+		width: 480px;
+		height: 480px;
+		right: -300px;
+		top: -180px;
+		transform: rotate(30deg);
+	}
+
+	.nosotros__deco-img--2 {
+		width: 400px;
+		height: 400px;
+		left: -300px;
+		top: 470px;
+		transform: rotate(-15deg);
+	}
+
+	.nosotros__deco-img--3 {
+		width: 400px;
+		height: 400px;
+		right: -120px;
+		bottom: -80px;
+		transform: rotate(27.82deg);
+	}
+
+	.nosotros__inner {
+		position: relative;
+		z-index: 1;
+		max-width: 1272px;
+		margin-inline: auto;
+		padding-inline: 24px;
+	}
+
+	.nosotros__grid {
+		display: grid;
+		grid-template-columns: minmax(0, 627fr) minmax(0, 590fr);
+		gap: 40px 56px;
+	}
+
+	.nosotros__intro {
+		grid-column: 1;
+		grid-row: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 32px;
+	}
+
+	.nosotros__heading {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(32px, 3.6vw, 54px);
+		line-height: 1.1;
+		color: var(--color-purple);
+	}
+
+	.nosotros__heading-accent {
+		color: var(--color-orange);
+	}
+
+	.nosotros__body {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 32px;
+		color: var(--color-black);
+		text-align: justify;
+	}
+
+	.nosotros__highlight {
+		color: var(--color-orange);
+	}
+
+	.nosotros__features {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	.nosotros__feature {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		width: 160px;
+		text-align: center;
+	}
+
+	.nosotros__feature-icon {
+		width: 44px;
+		height: 44px;
+		object-fit: contain;
+	}
+
+	.nosotros__feature-label {
+		margin: 0;
+		font-family: var(--font-body);
+		font-weight: 500;
+		font-size: 16px;
+		color: var(--color-black);
+	}
+
+	.nosotros__divider {
+		width: 1px;
+		height: 80px;
+		flex-shrink: 0;
+	}
+
+	.nosotros__image-main {
+		grid-column: 2;
+		grid-row: 1;
+		border-radius: 12px;
+		overflow: hidden;
+		aspect-ratio: 590 / 582;
+	}
+
+	.nosotros__image-main :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: fill;
+		display: block;
+	}
+
+	.nosotros__gallery {
+		grid-column: 1;
+		grid-row: 2;
+		display: flex;
+		gap: 20px;
+		align-self: center;
+	}
+
+	.nosotros__gallery :global(img) {
+		border-radius: 12px;
+		flex: 1 1 0;
+		min-width: 0;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 304 / 400;
+		object-fit: cover;
+		display: block;
+	}
+
+	.nosotros__compromiso {
+		grid-column: 2;
+		grid-row: 2;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		align-self: center;
+	}
+
+	.nosotros__compromiso-heading {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(28px, 2.8vw, 40px);
+		line-height: 1.15;
+		color: var(--color-purple);
+	}
+
+	.nosotros__compromiso .nosotros__body {
+		margin-top: 8px;
+	}
+
+	.nosotros__wave {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: auto;
+		z-index: 1;
+	}
+
+	@media (max-width: 900px) {
+		.nosotros__grid {
+			grid-template-columns: 1fr;
+		}
+
+		.nosotros__intro,
+		.nosotros__image-main,
+		.nosotros__gallery,
+		.nosotros__compromiso {
+			grid-column: 1;
+		}
+
+		.nosotros__intro {
+			grid-row: 1;
+		}
+
+		.nosotros__image-main {
+			grid-row: 2;
+		}
+
+		.nosotros__gallery {
+			grid-row: 3;
+		}
+
+		.nosotros__compromiso {
+			grid-row: 4;
+		}
+
+		.nosotros__deco-img--1,
+		.nosotros__deco-img--2,
+		.nosotros__deco-img--3 {
+			opacity: 0.5;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.nosotros {
+			padding-block: 64px;
+		}
+
+		.nosotros__intro,
+		.nosotros__compromiso {
+			align-items: center;
+			text-align: center;
+		}
+
+		.nosotros__heading {
+			font-size: 34px;
+		}
+
+		.nosotros__body {
+			text-align: center;
+		}
+
+		.nosotros__features {
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 24px;
+		}
+
+		.nosotros__divider {
+			display: none;
+		}
+
+		.nosotros__feature {
+			width: 130px;
+		}
+
+		.nosotros__deco-img--1,
+		.nosotros__deco-img--2,
+		.nosotros__deco-img--3 {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	function initParallax() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const section = document.querySelector<HTMLElement>(".nosotros");
+		if (!section) return;
+
+		const decos = section.querySelectorAll<HTMLElement>(".nosotros__deco-img");
+		const magnitudes = [130, 150, 140];
+
+		// side-in reveal: each image starts fully offscreen on its own side (left-side
+		// images hidden to the left, right-side images hidden to the right) and slides
+		// inward to its resting bleed position as THAT image scrolls through the viewport
+		// (each has its own trigger, not the whole section, so it settles while still in view)
+		decos.forEach((el, i) => {
+			const direction = el.dataset.side === "left" ? -1 : 1;
+			const magnitude = magnitudes[i % magnitudes.length];
+
+			gsap.fromTo(
+				el,
+				{ xPercent: direction * magnitude },
+				{
+					xPercent: 0,
+					ease: "none",
+					scrollTrigger: {
+						trigger: el,
+						start: "top bottom",
+						end: "top 55%",
+						scrub: 1,
+					},
+				},
+			);
+		});
+	}
+
+	function initIntroReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const intro = document.querySelector<HTMLElement>(".nosotros__intro");
+		const imageMain = document.querySelector<HTMLElement>(".nosotros__image-main");
+		if (!intro) return;
+
+		const heading = intro.querySelector<HTMLElement>(".nosotros__heading");
+		const body = intro.querySelector<HTMLElement>(".nosotros__body");
+		const featureItems = intro.querySelectorAll<HTMLElement>(".nosotros__feature");
+		const dividers = intro.querySelectorAll<HTMLElement>(".nosotros__divider");
+		const imageImg = imageMain?.querySelector<HTMLElement>("img") ?? null;
+
+		gsap.set([heading, body].filter(Boolean), { opacity: 0, y: 24 });
+		gsap.set(featureItems, { opacity: 0, scale: 0.6 });
+		gsap.set(dividers, { scaleY: 0, transformOrigin: "50% 50%" });
+		if (imageMain) gsap.set(imageMain, { clipPath: "inset(0 100% 0 0)" });
+		if (imageImg) gsap.set(imageImg, { scale: 1.05 });
+
+		// toggleActions, not once:true — once:true auto-kills the ScrollTrigger the
+		// instant it fires, and if a page loads already scrolled past several such
+		// triggers at once, the resulting cascade of simultaneous kills can crash GSAP's
+		// internal refresh (it mutates the trigger list mid-iteration). toggleActions
+		// plays forward once without ever removing the trigger.
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: intro,
+				start: "top 75%",
+				toggleActions: "play none none none",
+			},
+			defaults: { ease: "power3.out" },
+		});
+
+		if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.6 }, 0);
+		if (body) tl.to(body, { opacity: 1, y: 0, duration: 0.6 }, 0.15);
+		if (dividers.length) tl.to(dividers, { scaleY: 1, duration: 0.4, ease: "power2.out" }, 0.35);
+		if (featureItems.length) {
+			tl.to(featureItems, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.7)", stagger: 0.1 }, 0.4);
+		}
+		if (imageMain) tl.to(imageMain, { clipPath: "inset(0 0% 0 0)", duration: 0.9, ease: "power3.inOut" }, 0);
+		if (imageImg) tl.to(imageImg, { scale: 1, duration: 0.9 }, 0);
+	}
+
+	function initGalleryReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const gallery = document.querySelector<HTMLElement>(".nosotros__gallery");
+		const compromiso = document.querySelector<HTMLElement>(".nosotros__compromiso");
+		if (!gallery) return;
+
+		const galleryImgs = gallery.querySelectorAll<HTMLElement>("img");
+		const heading = compromiso?.querySelector<HTMLElement>(".nosotros__compromiso-heading") ?? null;
+		const body = compromiso?.querySelector<HTMLElement>(".nosotros__body") ?? null;
+
+		gsap.set(galleryImgs, { clipPath: "inset(0 0 100% 0)", scale: 1.05 });
+		gsap.set([heading, body].filter(Boolean), { opacity: 0, y: 20 });
+
+		const tl = gsap.timeline({
+			scrollTrigger: {
+				trigger: gallery,
+				start: "top 80%",
+				toggleActions: "play none none none",
+			},
+			defaults: { ease: "power3.out" },
+		});
+
+		galleryImgs.forEach((img, i) => {
+			tl.to(img, { clipPath: "inset(0 0 0% 0)", duration: 0.7, ease: "power3.inOut" }, i * 0.15);
+			tl.to(img, { scale: 1, duration: 0.7 }, i * 0.15);
+		});
+
+		if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.6 }, 0);
+		if (body) tl.to(body, { opacity: 1, y: 0, duration: 0.5 }, 0.2);
+	}
+
+	function initNosotrosAnimations() {
+		initParallax();
+		initIntroReveal();
+		initGalleryReveal();
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initNosotrosAnimations);
+	} else {
+		initNosotrosAnimations();
+	}
+</script>
+

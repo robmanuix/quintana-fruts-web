@@ -1,0 +1,693 @@
+---
+import { Image } from "astro:assets";
+import dividerLeafPurple from "../assets/icons/divider-leaf-purple.svg";
+import dividerDashSmall from "../assets/icons/divider-dash-small.svg";
+import dividerVertical from "../assets/icons/divider-vertical.svg";
+import iconCtaDocument from "../assets/icons/icon-cta-document.svg";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { contactHref, getHomePage, getProducts, mediaUrl } from "../lib/payload";
+
+const locale = Astro.currentLocale === "en" ? "en" : "es";
+const homePage = await getHomePage(locale);
+const t = homePage.productos ?? {};
+const ctaHref = contactHref(locale, getRelativeLocaleUrl(locale, "/contacto"), t.ctaCotizarReason);
+
+// Products (name, description, images, stats, accent color, technical sheet) come from
+// Payload's `products` collection; section copy and the "Beneficios" strip come from the
+// `home-page` global's `productos`/`beneficios` groups.
+const products = await getProducts(locale);
+
+// alt-text patterns, not editable content — same shape in every locale, just the wording differs
+const photoAlt =
+	locale === "en"
+		? { main: (name: string) => `${name} in its crop`, top: (name: string) => `Cut ${name}`, bottom: (name: string) => `${name} plant` }
+		: {
+				main: (name: string) => `${name} en su cultivo`,
+				top: (name: string) => `${name} cortada`,
+				bottom: (name: string) => `Planta de ${name}`,
+			};
+
+const trustStats = (homePage.beneficios?.items ?? []).map((item) => ({
+	icon: mediaUrl(item.icon),
+	title: item.title.split("\n"),
+	desc: item.desc.split("\n"),
+}));
+---
+
+<section class="productos" id="productos">
+	<div class="productos__inner">
+		<div class="productos__intro">
+			<h2 class="productos__heading">{t.heading}</h2>
+			<img src={dividerLeafPurple.src} alt="" class="productos__divider" width="457" height="38" />
+			<p class="productos__subheading">{t.subheading}</p>
+		</div>
+
+		<div class="productos__list">
+			{
+				products.map((product) => (
+					<article class="productos__card" data-product-card style={`--accent: ${product.accentColor ?? "#4a2565"};`}>
+						{product.bloomImage && (
+							<div class="productos__card-bloom" aria-hidden="true">
+								<Image
+									src={mediaUrl(product.bloomImage)!}
+									alt=""
+									width={product.bloomImage.width ?? 400}
+									height={product.bloomImage.height ?? 400}
+									widths={[400, 700]}
+									sizes="600px"
+								/>
+							</div>
+						)}
+
+						<div class="productos__card-photos">
+							<div class="productos__photo productos__photo--main">
+								<Image
+									src={mediaUrl(product.mainImage)!}
+									alt={photoAlt.main(product.name)}
+									width={product.mainImage.width ?? 790}
+									height={product.mainImage.height ?? 820}
+									widths={[300, 500, 790]}
+									sizes="(max-width: 1024px) 55vw, 395px"
+								/>
+							</div>
+							<div class="productos__photo-stack">
+								<div class="productos__photo productos__photo--top">
+									<Image
+										src={mediaUrl(product.topImage)!}
+										alt={photoAlt.top(product.name)}
+										width={product.topImage.width ?? 384}
+										height={product.topImage.height ?? 346}
+										widths={[200, 384]}
+										sizes="192px"
+									/>
+								</div>
+								<div class="productos__photo productos__photo--bottom">
+									<Image
+										src={mediaUrl(product.bottomImage)!}
+										alt={photoAlt.bottom(product.name)}
+										width={product.bottomImage.width ?? 384}
+										height={product.bottomImage.height ?? 448}
+										widths={[200, 384]}
+										sizes="192px"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div class="productos__card-content">
+							<div class="productos__card-heading">
+								<p class="productos__card-name">{product.name}</p>
+								{product.scientificName && <p class="productos__card-scientific">{product.scientificName}</p>}
+							</div>
+							{product.description && <p class="productos__card-desc">{product.description}</p>}
+							<img src={dividerDashSmall.src} alt="" class="productos__card-dash" width="50" height="1" />
+							<div class="productos__card-stats">
+								{(product.stats ?? []).map((stat) => (
+									<div class="productos__stat">
+										{stat.icon && (
+											<span
+												class="productos__stat-icon productos__icon-mask"
+												style={`--icon-url: url(${mediaUrl(stat.icon)});`}
+												aria-hidden="true"
+											/>
+										)}
+										<div class="productos__stat-text">
+											<span class="productos__stat-label">{stat.label}</span>
+											<span class="productos__stat-value">{stat.value}</span>
+										</div>
+									</div>
+								))}
+							</div>
+							<div class="productos__card-cta">
+								<a href={mediaUrl(product.technicalSheet) ?? "#"} class="productos__cta productos__cta--solid">
+									{t.ctaFichaLabel}
+									<img src={iconCtaDocument.src} alt="" width="16" height="20" />
+								</a>
+								<a href={ctaHref} class="productos__cta productos__cta--outline">
+									{t.ctaCotizarLabel}
+									{product.arrowIcon && (
+										<span
+											class="productos__cta-arrow productos__icon-mask"
+											style={`--icon-url: url(${mediaUrl(product.arrowIcon)});`}
+											aria-hidden="true"
+										/>
+									)}
+								</a>
+							</div>
+						</div>
+					</article>
+				))
+			}
+		</div>
+
+		<div class="productos__trust">
+			{
+				trustStats.map((stat, i) => (
+					<>
+						{i > 0 && <img src={dividerVertical.src} alt="" class="productos__trust-divider" aria-hidden="true" />}
+						<div class="productos__trust-item">
+							<img src={stat.icon} alt="" class="productos__trust-icon" width="53" height="53" />
+							<p class="productos__trust-title">
+								{stat.title.map((line) => (
+									<>
+										{line}
+										<br />
+									</>
+								))}
+							</p>
+							<p class="productos__trust-desc">
+								{stat.desc.map((line) => (
+									<>
+										{line}
+										<br />
+									</>
+								))}
+							</p>
+						</div>
+					</>
+				))
+			}
+		</div>
+	</div>
+</section>
+
+<style>
+	.productos {
+		position: relative;
+		background: var(--color-cream);
+		padding-block: 96px;
+		overflow: hidden;
+	}
+
+	.productos__inner {
+		max-width: 1272px;
+		margin-inline: auto;
+		padding-inline: 24px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.productos__intro {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		max-width: 750px;
+		text-align: center;
+	}
+
+	.productos__heading {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-weight: 700;
+		font-size: clamp(32px, 3.6vw, 54px);
+		line-height: 1.2;
+		color: var(--color-purple);
+	}
+
+	.productos__divider {
+		width: min(457px, 80%);
+		height: auto;
+	}
+
+	.productos__subheading {
+		margin: 0;
+		font-family: var(--font-nav);
+		font-weight: 500;
+		font-size: 18px;
+		line-height: 32px;
+		color: var(--color-black);
+	}
+
+	.productos__list {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		width: 100%;
+		margin-top: 56px;
+	}
+
+	.productos__card {
+		position: relative;
+		display: flex;
+		align-items: flex-start;
+		gap: 64px;
+		width: 100%;
+		padding: 12px;
+		border-radius: 12px;
+		background: rgba(249, 249, 249, 0.75);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+		overflow: hidden;
+		transform-origin: 50% 50%;
+		will-change: transform;
+	}
+
+	.productos__card-bloom {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		z-index: 0;
+		overflow: hidden;
+	}
+
+	.productos__card-bloom :global(img) {
+		display: block;
+		position: absolute;
+		right: -4%;
+		bottom: -6%;
+		width: 26%;
+		height: auto;
+	}
+
+	.productos__card-photos {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		gap: 13px;
+		flex-shrink: 0;
+	}
+
+	.productos__photo {
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.productos__photo :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.productos__photo--main {
+		width: 395px;
+		height: 410px;
+	}
+
+	.productos__photo-stack {
+		display: flex;
+		flex-direction: column;
+		gap: 13px;
+		width: 192px;
+		flex-shrink: 0;
+	}
+
+	.productos__photo--top {
+		width: 192px;
+		height: 173px;
+	}
+
+	.productos__photo--bottom {
+		width: 192px;
+		height: 224px;
+	}
+
+	.productos__card-content {
+		position: relative;
+		z-index: 1;
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+		padding-block: 18px;
+	}
+
+	.productos__card-heading {
+		display: flex;
+		flex-direction: column;
+		color: var(--accent);
+	}
+
+	.productos__card-name {
+		margin: 0;
+		font-family: var(--font-body);
+		font-weight: 700;
+		font-size: 48px;
+		line-height: 1;
+		text-transform: uppercase;
+	}
+
+	.productos__card-scientific {
+		margin: 0;
+		font-family: var(--font-body);
+		font-style: italic;
+		font-weight: 400;
+		font-size: 24px;
+	}
+
+	.productos__card-desc {
+		margin: 0;
+		max-width: 460px;
+		font-family: var(--font-body);
+		font-weight: 400;
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--color-black);
+	}
+
+	.productos__card-dash {
+		display: block;
+	}
+
+	.productos__card-stats {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(140px, 183px));
+		gap: 10px 24px;
+	}
+
+	.productos__stat {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.productos__stat-icon {
+		flex-shrink: 0;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+	}
+
+	.productos__icon-mask {
+		background-color: var(--accent);
+		mask-image: var(--icon-url);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		mask-position: center;
+		-webkit-mask-image: var(--icon-url);
+		-webkit-mask-size: contain;
+		-webkit-mask-repeat: no-repeat;
+		-webkit-mask-position: center;
+	}
+
+	.productos__stat-text {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.productos__stat-label {
+		font-family: var(--font-body);
+		font-weight: 700;
+		font-size: 14px;
+		color: var(--color-black);
+	}
+
+	.productos__stat-value {
+		font-family: var(--font-body);
+		font-weight: 500;
+		font-size: 14px;
+		color: var(--color-black);
+	}
+
+	.productos__card-cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.productos__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 20px;
+		padding: 12px 24px;
+		border-radius: var(--radius-pill);
+		font-family: var(--font-body);
+		font-weight: 700;
+		font-size: 14px;
+		letter-spacing: 2.8px;
+		text-transform: uppercase;
+		text-decoration: none;
+		white-space: nowrap;
+		transition: transform 0.2s ease;
+	}
+
+	.productos__cta:hover {
+		transform: translateY(-2px);
+	}
+
+	.productos__cta--solid {
+		display: none;
+		color: var(--color-cream);
+		background: var(--accent);
+	}
+
+	.productos__cta--outline {
+		background: rgba(243, 232, 209, 0.24);
+		backdrop-filter: blur(4px);
+		border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+		color: var(--color-black);
+	}
+
+	.productos__cta-arrow {
+		display: inline-block;
+		width: 17.5px;
+		height: 15px;
+		transform: rotate(90deg);
+	}
+
+	.productos__trust {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		width: 100%;
+		margin-top: 40px;
+		padding: 24px;
+		border: 1px solid rgba(25, 25, 23, 0.12);
+		border-radius: 18px;
+	}
+
+	.productos__trust-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		flex: 1;
+		min-width: 0;
+		text-align: center;
+	}
+
+	.productos__trust-icon {
+		object-fit: contain;
+	}
+
+	.productos__trust-title {
+		margin: 0;
+		font-family: var(--font-body);
+		font-weight: 700;
+		font-size: 18px;
+		line-height: 1.3;
+		color: var(--color-purple);
+	}
+
+	.productos__trust-desc {
+		margin: 0;
+		font-family: var(--font-body);
+		font-weight: 500;
+		font-size: 14px;
+		line-height: 1.4;
+		color: var(--color-black);
+	}
+
+	.productos__trust-divider {
+		width: 1px;
+		height: 100px;
+		flex-shrink: 0;
+	}
+
+	@media (max-width: 1024px) {
+		.productos__card {
+			flex-direction: column;
+			gap: 24px;
+		}
+
+		.productos__card-photos {
+			width: 100%;
+		}
+
+		.productos__photo--main {
+			flex: 1;
+			width: auto;
+			min-width: 0;
+		}
+
+		.productos__trust {
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.productos__trust-item {
+			flex: 1 1 calc(33.33% - 16px);
+		}
+
+		.productos__trust-divider {
+			display: none;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.productos {
+			padding-block: 64px;
+		}
+
+		.productos__heading {
+			font-size: 32px;
+		}
+
+		.productos__list {
+			margin-top: 40px;
+		}
+
+		.productos__card {
+			padding: 16px;
+		}
+
+		.productos__card-photos {
+			flex-wrap: wrap;
+		}
+
+		.productos__photo--main {
+			flex-basis: 100%;
+			height: 260px;
+		}
+
+		.productos__photo-stack {
+			flex-direction: row;
+			width: 100%;
+		}
+
+		.productos__photo--top,
+		.productos__photo--bottom {
+			flex: 1;
+			width: auto;
+			min-width: 0;
+			height: 173px;
+		}
+
+		.productos__card-content {
+			align-items: center;
+			text-align: center;
+		}
+
+		.productos__card-heading {
+			align-items: center;
+		}
+
+		.productos__card-name {
+			font-size: 36px;
+		}
+
+		.productos__card-stats {
+			grid-template-columns: repeat(2, 1fr);
+			text-align: left;
+		}
+
+		.productos__card-cta {
+			flex-direction: column;
+			width: 100%;
+		}
+
+		.productos__cta {
+			width: 100%;
+			justify-content: center;
+		}
+
+		.productos__trust {
+			gap: 32px;
+		}
+
+		.productos__trust-item {
+			flex: 1 1 100%;
+		}
+	}
+</style>
+
+<script>
+	import { gsap } from "gsap";
+	import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	function initIntroReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const intro = document.querySelector<HTMLElement>(".productos__intro");
+		if (!intro) return;
+
+		const heading = intro.querySelector<HTMLElement>(".productos__heading");
+		const divider = intro.querySelector<HTMLElement>(".productos__divider");
+		const subheading = intro.querySelector<HTMLElement>(".productos__subheading");
+
+		gsap.set(heading, { opacity: 0, y: 36 });
+		gsap.set(divider, { opacity: 0, y: 20 });
+		gsap.set(subheading, { opacity: 0, y: 20 });
+
+		const tl = gsap.timeline({
+			// toggleActions, not once:true — see initCardsReveal for why (crashes GSAP
+			// when several once:true triggers are already past-due on a deep-scrolled load).
+			scrollTrigger: { trigger: intro, start: "top 75%", toggleActions: "play none none none" },
+		});
+
+		if (heading) tl.to(heading, { opacity: 1, y: 0, duration: 0.65, ease: "power4.out" }, 0);
+		if (divider) tl.to(divider, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, 0.2);
+		if (subheading) tl.to(subheading, { opacity: 1, y: 0, duration: 0.5, ease: "power4.out" }, 0.32);
+	}
+
+	function initCardsReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const cards = document.querySelectorAll<HTMLElement>("[data-product-card]");
+		if (!cards.length) return;
+
+		cards.forEach((card) => {
+			gsap.fromTo(
+				card,
+				{ opacity: 0, y: 28, scale: 0.96 },
+				{
+					opacity: 1,
+					y: 0,
+					scale: 1,
+					duration: 0.7,
+					ease: "power3.out",
+					// toggleActions, not once:true — see initIntroReveal above for why.
+					scrollTrigger: { trigger: card, start: "top 85%", toggleActions: "play none none none" },
+				},
+			);
+		});
+	}
+
+	function initTrustReveal() {
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+		const trust = document.querySelector<HTMLElement>(".productos__trust");
+		if (!trust) return;
+
+		const items = trust.querySelectorAll<HTMLElement>(".productos__trust-item");
+		if (!items.length) return;
+
+		gsap.set(items, { opacity: 0, y: 20 });
+
+		gsap.to(items, {
+			opacity: 1,
+			y: 0,
+			duration: 0.5,
+			ease: "power3.out",
+			stagger: 0.08,
+			scrollTrigger: { trigger: trust, start: "top 88%", toggleActions: "play none none none" },
+		});
+	}
+
+	function initProductosAnimations() {
+		initIntroReveal();
+		initCardsReveal();
+		initTrustReveal();
+	}
+
+	if (document.readyState === "loading") {
+		document.addEventListener("DOMContentLoaded", initProductosAnimations);
+	} else {
+		initProductosAnimations();
+	}
+</script>
