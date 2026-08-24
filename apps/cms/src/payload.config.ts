@@ -1,6 +1,7 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { s3Storage } from "@payloadcms/storage-s3";
+import { es } from "@payloadcms/translations/languages/es";
 import path from "path";
 import { buildConfig } from "payload";
 import sharp from "sharp";
@@ -26,6 +27,18 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		components: {
+			graphics: {
+				Logo: "@/graphics/Logo#Logo",
+				Icon: "@/graphics/Icon#Icon",
+			},
+		},
+	},
+	// admin UI interface language (buttons, field labels, etc.) — separate from
+	// `localization` below, which controls the ES/EN content locales themselves.
+	i18n: {
+		fallbackLanguage: "es",
+		supportedLanguages: { es },
 	},
 	collections: [Users, Media, ContactReasons, Products],
 	globals: [SiteSettings, HomePage, ContactPage],

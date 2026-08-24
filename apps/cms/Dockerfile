@@ -30,6 +30,7 @@ WORKDIR /app
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=80
 COPY --from=build /repo/apps/cms/.next/standalone ./
 COPY --from=build /repo/apps/cms/.next/static ./apps/cms/.next/static
+COPY --from=build /repo/apps/cms/public ./apps/cms/public
 
 # `payload migrate` needs the actual TS source (payload.config.ts + collections/
 # globals/migrations it imports) — Payload's CLI loads it via tsx at runtime,
