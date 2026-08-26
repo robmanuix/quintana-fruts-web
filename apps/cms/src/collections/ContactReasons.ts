@@ -1,10 +1,16 @@
 import type { CollectionConfig } from "payload";
 
+import { afterChangePublishHook, afterDeleteRebuildHook } from "../hooks/triggerRebuild";
+
 export const ContactReasons: CollectionConfig = {
 	slug: "contact-reasons",
 	admin: {
 		useAsTitle: "label",
 		defaultColumns: ["label", "key", "sortOrder"],
+	},
+	hooks: {
+		afterChange: [afterChangePublishHook],
+		afterDelete: [afterDeleteRebuildHook],
 	},
 	fields: [
 		{
